@@ -129,11 +129,14 @@ endif()
 
 # eigen
 # FindEigen3.cmake only uses ENV in HINTS
-set(ENV{EIGEN3_ROOT} "${EIGEN3_ROOT}")
+set(ENV{EIGEN3_ROOT} ${EIGEN3_ROOT})
 find_package(Eigen3 3.3.90 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
 # boost
+# BOOST_ROOT can be case-sensitive depending on cmake version
+set(Boost_ROOT ${BOOST_ROOT})
+set(ENV{Boost_ROOT} $ENV{BOOST_ROOT})
 find_package(Boost 1.71.0 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -143,8 +146,8 @@ include_directories(${FFTW_INCLUDES})
 
 # metis
 # FindMETIS.cmake uses METIS_DIR instead of METIS_ROOT in HINTS
-set(METIS_DIR "${METIS_ROOT}")
-set(ENV{METIS_DIR} "$ENV{METIS_ROOT}")
+set(METIS_DIR ${METIS_ROOT})
+set(ENV{METIS_DIR} $ENV{METIS_ROOT})
 find_package(Metis REQUIRED QUIET)
 include_directories(${METIS_INCLUDE_DIRS})
 
