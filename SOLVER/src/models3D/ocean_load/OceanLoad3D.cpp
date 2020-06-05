@@ -98,10 +98,9 @@ buildInparam(const ExodusMesh &exodusMesh, const LocalMesh &localMesh,
         sg_tools::inparamUnits(gm, rootc, lengthUnit, angleUnit);
         
         ////////////// data //////////////
-        const std::string &dataVarName = gm.get<std::string>
-        (root + ":data_sum_rho_depth:nc_var");
-        double factor =
-        gm.getWithDefault(root + ":data_sum_rho_depth:factor", 1.);
+        const std::string &rootd = root + ":data_sum_rho_depth";
+        const std::string &dataVarName = gm.get<std::string>(rootd + ":nc_var");
+        double factor = gm.getWithDefault(rootd + ":factor", 1.);
         
         // construct
         return std::make_shared
