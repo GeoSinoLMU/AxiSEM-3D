@@ -96,19 +96,19 @@ buildInparam(const ExodusMesh &exodusMesh, const LocalMesh &localMesh,
         std::shared_ptr<const Model3D>
         model = Volumetric3D::buildInparam(exodusMesh, localMesh,
                                            modelName, keyInparam);
-        // geometric
+        // try geometric
         if (model == nullptr) {
             model = Geometric3D::buildInparam(exodusMesh, localMesh,
                                               modelName, keyInparam);
         }
         
-        // ocean load
+        // try ocean load
         if (model == nullptr) {
             model = OceanLoad3D::buildInparam(exodusMesh, localMesh,
                                               modelName, keyInparam);
         }
         
-        // unknown
+        // unknown model class
         if (model == nullptr) {
             throw std::runtime_error("Model3D::buildInparam || "
                                      "Unknown 3D model: " + modelName);
