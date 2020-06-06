@@ -32,8 +32,8 @@ mDataVarName(dataVarName), mFactor(factor) {
     mGrid = std::make_unique<StructuredGrid<2, double>>
     (mFileName, mCrdVarNames, varInfo, shuffleData);
     // coordinate units
-    sg_tools::constructGridUnits(*mGrid, mSourceCentered, false,
-                                 lengthUnit, angleUnit);
+    sg_tools::constructUnits(*mGrid, mSourceCentered, false,
+                             lengthUnit, angleUnit);
     // longitude range
     mLon360 = sg_tools::constructLon360(*mGrid, mSourceCentered, mModelName);
 }
@@ -42,16 +42,13 @@ mDataVarName(dataVarName), mFactor(factor) {
 bool StructuredGridG3D::getUndulation(const eigen::DMatX3 &spz,
                                       const eigen::DMat24 &nodalSZ,
                                       eigen::DColX &undulation) const {
-    //////////////////////// coords ////////////////////////
-    // check min/max
+    // check inplane scope
     const auto &gridCrds = mGrid->getGridCoords();
-    if (!sg_tools::coordsScope1D
-        (nodalSZ, mUseDepth, mDepthSolid,
-         mSourceCentered, gridCrds[0].front(), gridCrds[0].back(),
-         true, mMin, mMax)) {
+    if (!inplaneScope(nodalSZ,
+                      mSourceCentered, gridCrds[0].front(), gridCrds[0].back(),
+                      true, mMin, mMax, mUseDepth, mDepthSolid)) {
         return false;
     }
-    
     return getUndulation(spz, undulation);
 }
 
@@ -60,9 +57,9 @@ bool StructuredGridG3D::getUndulation(const eigen::DMatX3 &spz,
                                       eigen::DColX &undulation) const {
     //////////////////////// coords ////////////////////////
     // compute grid coords
-    const eigen::DMatX3 &crdGrid = sg_tools::
-    coordsToGrid(spz, mSourceCentered, mEllipticity, mLon360,
-                 mUseDepth, mDepthSolid, mModelName);
+    const eigen::DMatX3 &crdGrid =
+    coordsFromMeshToModel(spz, mSourceCentered, mEllipticity, mLon360,
+                          mUseDepth, mDepthSolid, mModelName);
     
     //////////////////////// values ////////////////////////
     // allocate and fill with zero
@@ -70,7 +67,7 @@ bool StructuredGridG3D::getUndulation(const eigen::DMatX3 &spz,
     undulation = eigen::DColX::Zero(nCardinals);
     
     // point loop
-    double err = std::numeric_limits<double>::lowest();
+    static const double err = std::numeric_limits<double>::lowest();
     bool oneInScope = false;
     for (int ipnt = 0; ipnt < nCardinals; ipnt++) {
         const eigen::DRow2 &horizontal = crdGrid.block(ipnt, 0, 1, 2);
