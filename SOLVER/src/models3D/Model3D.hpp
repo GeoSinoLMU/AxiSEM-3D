@@ -56,9 +56,14 @@ protected:
     // check inplane scope
     template <class Mat2X>
     static bool inplaneScope(const Mat2X &szMesh,
-                             bool useDepth, bool depthSolid,
                              bool checkR, double minR, double maxR,
-                             bool checkZ, double minZ, double maxZ) {
+                             bool checkZ, double minZ, double maxZ,
+                             bool useDepth, bool depthSolid) {
+        // check nothing
+        if ((!checkR) && (!checkZ)) {
+            return true;
+        }
+        
         // compute coords in model CS
         Mat2X crdModel;
         if (geodesy::isCartesian()) {
@@ -67,12 +72,7 @@ protected:
             // (s, z) -> (theta, r)
             crdModel = geodesy::sz2rtheta(szMesh, false, 0, 1, 1, 0);
         }
-        // radius -> depth
-        if (useDepth) {
-            double router = (depthSolid ? geodesy::getOuterSolidRadius() :
-                             geodesy::getOuterRadius());
-            crdModel.row(1) = router - crdModel.row(1).array();
-        }
+        
         // check R
         if (checkR) {
             if (crdModel.row(0).maxCoeff() < minR ||
@@ -80,8 +80,15 @@ protected:
                 return false;
             }
         }
+        
         // check Z
         if (checkZ) {
+            // radius -> depth
+            if (useDepth) {
+                double router = (depthSolid ? geodesy::getOuterSolidRadius() :
+                                 geodesy::getOuterRadius());
+                crdModel.row(1) = router - crdModel.row(1).array();
+            }
             if (crdModel.row(1).maxCoeff() < minZ ||
                 crdModel.row(1).minCoeff() > maxZ) {
                 return false;
