@@ -277,14 +277,14 @@ eigen::DColX computeNrFieldAndWeights(ExodusMesh &exodusMesh) {
         // compute nr on mesh
         timer::gPreloopTimer.begin("Computing Nr at mesh nodes");
         // additional parameters
-        bool limitByInPlane =
+        bool limitByInplane =
         inparam::gInparamNr.get<bool>("limit_Nr_by_inplane");
         bool useLuckyNumbers =
         inparam::gInparamAdvanced.get<bool>("develop:fftw_lucky_numbers");
         // compute
-        exodusMesh.formNrAtNodes(*nrField, limitByInPlane, useLuckyNumbers);
+        exodusMesh.formNrAtNodes(*nrField, limitByInplane, useLuckyNumbers);
         if (io::gVerbose != io::VerboseLevel::None) {
-            io::cout << exodusMesh.verboseNr(limitByInPlane, useLuckyNumbers);
+            io::cout << exodusMesh.verboseNr(limitByInplane, useLuckyNumbers);
         }
         timer::gPreloopTimer.ended("Computing Nr at mesh nodes");
     }

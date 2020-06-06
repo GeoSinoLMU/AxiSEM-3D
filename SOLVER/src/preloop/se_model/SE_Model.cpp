@@ -484,7 +484,7 @@ eigen::DRow3 SE_Model::undulatedToReference(const eigen::DRow3 &spzUnd) const {
                              "Failed to find reference radius.");
 }
 
-// form in-plane RTree
+// form inplane RTree
 void SE_Model::formInplaneRTree() {
     mRTreeFluid = std::make_unique<RTreeND<2, 1, int>>();
     mRTreeSolid = std::make_unique<RTreeND<2, 1, int>>();
@@ -498,7 +498,7 @@ void SE_Model::formInplaneRTree() {
     }
 }
 
-// locate in-plane
+// locate inplane
 int SE_Model::locateInplane(const eigen::DCol2 &sz, bool inFluid) const {
     // mesh range
     if ((sz(0) < mRangeS(0) || sz(0) > mRangeS(1)) &&
@@ -523,7 +523,7 @@ int SE_Model::locateInplane(const eigen::DCol2 &sz, bool inFluid) const {
         mRTreeSolid->query(sz, nNear, dists, vals);
     }
     
-    // locate in-plane
+    // locate inplane
     static eigen::DCol2 xieta;
     for (int iq = 0; iq < vals.size(); iq++) {
         int iquad = vals[iq](0);
@@ -535,7 +535,7 @@ int SE_Model::locateInplane(const eigen::DCol2 &sz, bool inFluid) const {
     return -1;
 }
 
-// compute in-plane factor
+// compute inplane factor
 eigen::DRowN SE_Model::
 computeInplaneFactor(const eigen::DCol2 &sz, int iquad) const {
     static eigen::DCol2 xieta;

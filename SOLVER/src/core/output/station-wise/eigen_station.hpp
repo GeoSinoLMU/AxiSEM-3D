@@ -26,7 +26,7 @@ namespace eigen {
     typedef Eigen::Matrix<numerical::Real, 1, Eigen::Dynamic> RRowX;
     typedef Eigen::Matrix<double, 1, nPEM> DRowN;
     
-    // in-plane interpolation
+    // inplane interpolation
     typedef Eigen::Matrix<numerical::ComplexR, Eigen::Dynamic, 1> CMatX1;
     typedef Eigen::Matrix<numerical::ComplexR, Eigen::Dynamic, 3> CMatX3;
     typedef Eigen::Matrix<numerical::ComplexR, Eigen::Dynamic, 6> CMatX6;

@@ -10,7 +10,7 @@
 
 #include "Station.hpp"
 
-// set element: in-plane weights and Fourier exp
+// set element: inplane weights and Fourier exp
 void Station::setElement(const eigen::DRowN &weights, int nu_1) {
     // indices of non-zero weights
     mNonZeroIndices.clear();

@@ -67,13 +67,13 @@ public:
     // undulated to reference
     eigen::DRow3 undulatedToReference(const eigen::DRow3 &spzUnd) const;
     
-    // form in-plane RTree
+    // form inplane RTree
     void formInplaneRTree();
     
-    // locate in-plane
+    // locate inplane
     int locateInplane(const eigen::DCol2 &sz, bool inFluid) const;
     
-    // compute in-plane factor
+    // compute inplane factor
     eigen::DRowN computeInplaneFactor(const eigen::DCol2 &sz, int iquad) const;
     
     // get quad

@@ -346,7 +346,7 @@ void Stations::release(const SE_Model &sem, Domain &domain, double dt,
             const eigen::DRow3 &llr = geodesy::spz2llr(spz, true, false);
             double baz = geodesy::backAzimuth(llr, true)(0);
             
-            // in-plane interpolation
+            // inplane interpolation
             int quadTag = stationQuad.at(ist);
             const eigen::DRowN &inplaneFactor =
             sem.computeInplaneFactor(spz({0, 2}).transpose(), quadTag);

@@ -37,12 +37,12 @@ public:
     }
     
 protected:
-    // set element: in-plane weights and nu
+    // set element: inplane weights and nu
     void setElement(const eigen::DRowN &weights, int nu_1);
     
     
     ///////////////////////// template functions /////////////////////////
-    // record: in-plane and Fourier interpolation
+    // record: inplane and Fourier interpolation
     template <int D,
     typename CMatXND =
     Eigen::Matrix<numerical::ComplexR, Eigen::Dynamic, spectral::nPEM * D>,
@@ -51,7 +51,7 @@ protected:
     typename RRowD =
     Eigen::Matrix<numerical::Real, 1, D>>
     void interpolate(const CMatXND &xnd, CMatXD &xd, RRowD &d, int nu_1) const {
-        // in-plane interpolation
+        // inplane interpolation
         for (int idim = 0; idim < D; idim++) {
             // Eigen 3.4 feature
             xd.block(0, idim, nu_1, 1) =
@@ -175,9 +175,9 @@ private:
     const std::string mKey;
     
     /////////// for record ///////////
-    // in-plane interpolation weights
+    // inplane interpolation weights
     // NOTE: stations are likely to be located on an element edge such as
-    //       the surface, so we only store non-zero in-plane weights
+    //       the surface, so we only store non-zero inplane weights
     eigen::RRowX mNonZeroWeights = eigen::RRowX(0);
     std::vector<int> mNonZeroIndices;
     

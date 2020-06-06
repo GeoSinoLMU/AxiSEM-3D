@@ -634,7 +634,7 @@ void ExodusMesh::readEllipticity(const NetCDF_Reader &reader,
 ///////////////// nr field /////////////////
 // form Nr at nodes
 void ExodusMesh::formNrAtNodes(const NrField &nrField,
-                               bool limitByInPlane, bool useLuckyNumbers) {
+                               bool limitByInplane, bool useLuckyNumbers) {
     // partitioning task on ranks
     int nNodePP = getNumNodes() / mpi::nproc();
     int nNodeOnMe = nNodePP;
@@ -660,9 +660,9 @@ void ExodusMesh::formNrAtNodes(const NrField &nrField,
     }
     timer::gPreloopTimer.ended("Computing Nr on ranks");
     
-    // limit by in-plane resolution
-    if (limitByInPlane) {
-        timer::gPreloopTimer.begin("Limiting Nr by in-plane resolution");
+    // limit by inplane resolution
+    if (limitByInplane) {
+        timer::gPreloopTimer.begin("Limiting Nr by inplane resolution");
         // node-quad reference list
         timer::gPreloopTimer.begin("Generating node-quad reference list");
         std::vector<std::vector<int>> refQuads;
@@ -708,7 +708,7 @@ void ExodusMesh::formNrAtNodes(const NrField &nrField,
             nrMe(inode) = std::min(nrMe(inode), upperNr);
         }
         timer::gPreloopTimer.ended("Computing average GLL spacing");
-        timer::gPreloopTimer.ended("Limiting Nr by in-plane resolution");
+        timer::gPreloopTimer.ended("Limiting Nr by inplane resolution");
     }
     
     // lucky numbers
@@ -734,7 +734,7 @@ void ExodusMesh::formNrAtNodes(const NrField &nrField,
 
 // verbose Nr
 std::string ExodusMesh::
-verboseNr(bool limitByInPlane, bool useLuckyNumbers) const {
+verboseNr(bool limitByInplane, bool useLuckyNumbers) const {
     std::stringstream ss;
     if (mpi::root()) {
         const eigen::IColX &nodalNr = mySuperOnly().mNodalNr;
@@ -745,8 +745,8 @@ verboseNr(bool limitByInPlane, bool useLuckyNumbers) const {
         int mean = (int)round(1. * sum / nodalNr.rows());
         ss << bstring::boxEquals(0, 6, "ave Nr", mean);
         ss << bstring::boxEquals(0, 6, "sum Nr", sum);
-        if (limitByInPlane) {
-            ss << "* Nr has been limited by in-plane resolution.\n";
+        if (limitByInplane) {
+            ss << "* Nr has been limited by inplane resolution.\n";
         }
         if (useLuckyNumbers) {
             ss << "* Nr has been rounded up to FFTW lucky numbers.\n";

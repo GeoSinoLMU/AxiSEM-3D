@@ -362,7 +362,7 @@ void Source::release(const SE_Model &sem, Domain &domain, double dt,
                    source->mUndulatedGeometry,
                    "Source name: " + source->mName, source->mAxial);
         
-        // in-plane interpolation
+        // inplane interpolation
         int quadTag = sourceIndexQuad.at(sindex);
         const eigen::DRowN &inplaneFactor =
         sem.computeInplaneFactor(spz({0, 2}).transpose(), quadTag);

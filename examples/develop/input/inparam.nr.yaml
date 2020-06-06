@@ -26,10 +26,10 @@
 #       4) STRUCTURED: Nr provided on a structured grid
 type_Nr: ANALYTICAL
 
-# what: limit Nr(s,z) by in-plane resolution
+# what: limit Nr(s,z) by inplane resolution
 # type: bool
 # note: in general, there is no need to use an azimuthal resolution
-#       higher than the in-plane resolution; users should use true.
+#       higher than the inplane resolution; users should use true.
 limit_Nr_by_inplane: true
 
 
