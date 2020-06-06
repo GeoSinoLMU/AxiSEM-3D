@@ -130,9 +130,9 @@ public:
     template <int VN = V, typename ArrayCS>
     typename std::enable_if<VN == 1, void>::type
     addLeaf(const ArrayCS &loc, T val) {
-        static TRowV inVal;
-        inVal(0) = val;
-        addLeaf(loc, inVal);
+        static TRowV oneVal;
+        oneVal(0) = val;
+        addLeaf(loc, oneVal);
     }
     
     // add leafs
@@ -213,9 +213,9 @@ public:
     typename std::enable_if<VN == 1, T>::type
     compute(const ArrayCS &loc, int count, double maxDistInRange,
             T valOutOfRange, double distTolExact) const {
-        static TRowV valOut;
-        valOut(0) = valOutOfRange;
-        return compute(loc, count, maxDistInRange, valOut, distTolExact)(0);
+        static TRowV oneVal;
+        oneVal(0) = valOutOfRange;
+        return compute(loc, count, maxDistInRange, oneVal, distTolExact)(0);
     }
     
     // size
