@@ -50,14 +50,9 @@ set(SERIAL_BUILD false)
 # ** Par-NetCDF is supported but not mandatory
 set(USE_PARALLEL_NETCDF false)
 
-# force link to HDF5 libraries
-# ** set to "true" if linking fails with missing HDF5 symbols
-#    (that happens when NetCDF was installed with dynamic linking)
-set(FORCE_HDF5_LINK false)
-
 # additional libraries to link to
 # ** add libs if linking fails with missing symbols, e.g., "-lcurl"
-set(ADDITIONAL_LIBS "")
+set(ADDITIONAL_LIBS "-lcurl")
 
 ########################################################################
 ###################### Build Settings (EDIT ABOVE) #####################
@@ -161,9 +156,7 @@ message(FATAL_ERROR "Missing header netcdf_par.h under ${NETCDF_INCLUDES}/.\
 endif()
 
 # hdf5
-if(FORCE_HDF5_LINK)
 find_package(HDF5 COMPONENTS C COMPONENTS HL REQUIRED)
-endif()
 
 
 ################# include paths #################
@@ -226,18 +219,49 @@ set_property(TARGET axisem3d PROPERTY CXX_STANDARD 17)
 
 ################# summary #################
 message(STATUS "")
-message(STATUS "=================== Summary of libraries ===================")
-message(STATUS "* Eigen3:")
-message(STATUS "  provided root: ${EIGEN3_ROOT}")
-message(STATUS "  using include: ${EIGEN3_INCLUDE_DIR}")
-message(STATUS "* Boost:")
-message(STATUS "  provided root: ${BOOST_ROOT}")
-message(STATUS "  using include: ${Boost_INCLUDE_DIR}")
-message(STATUS "* FFTW3:")
-message(STATUS "  provided root: ${FFTW_ROOT}")
-message(STATUS "  using include: ${FFTW_INCLUDE_DIR}")
-message(STATUS "  using library: ${FFTW_LIBRARIES}")
-message(STATUS "============================================================")
+message(STATUS "========================== Summary ===========================")
+message("   Compilers_____________________________________________________")
+message("     C compiler         =  ${CMAKE_C_COMPILER}")
+message("     C++ compiler       =  ${CMAKE_CXX_COMPILER}")
+message("     Fortran compiler   =  ${CMAKE_Fortran_COMPILER}")
+message("     C++ flags release  =  ${CMAKE_C_FLAGS_RELEASE}")
+message("     C++ flags debug    =  ${CMAKE_C_FLAGS_DEBUG}")
+message("     Build type         =  ${CMAKE_BUILD_TYPE}")
+message("   Libraries_____________________________________________________")
+message("     * Eigen3")
+message("       user-specified root: ${EIGEN3_ROOT}")
+message("       found include paths: ${EIGEN3_INCLUDE_DIR}")
+message("     * Boost")
+message("       user-specified root: ${BOOST_ROOT}")
+message("       found include paths: ${Boost_INCLUDE_DIR}")
+message("     * FFTW3")
+message("       user-specified root: ${FFTW_ROOT}")
+message("       found include paths: ${FFTW_INCLUDES}")
+message("       linked to libraries: ${FFTW_LIBRARIES}")
+message("     * METIS")
+message("       user-specified root: ${METIS_ROOT}")
+message("       found include paths: ${METIS_INCLUDE_DIRS}")
+message("       linked to libraries: ${METIS_LIBRARIES}")
+message("     * NetCDF")
+message("       user-specified root: ${NETCDF_ROOT}")
+message("       found include paths: ${NETCDF_INCLUDES}")
+message("       linked to libraries: ${NETCDF_LIBRARIES}")
+message("     * HDF5")
+message("       user-specified root: ${HDF5_ROOT}")
+message("       linked to libraries: ${HDF5_LIBRARIES}")
+message("                            ${HDF5_HL_LIBRARIES}")
+message("     * Others")
+message("       user-specified additional libraries: ${ADDITIONAL_LIBS}")
+message("   Options_______________________________________________________")
+message("     SEM n-polynomial    =  ${NPOL}")
+if(${USE_DOUBLE})
+message("     Solver precision    =  double")
+else()
+message("     Solver precision    =  single")
+endif()
+message("     Memory-saving mode  =  ${MEMORY_SAVING_MODE}")
+message("     Build without mpi   =  ${SERIAL_BUILD}")
+message("     Parallel netcdf     =  ${USE_PARALLEL_NETCDF}")
+message("     Source directory    =  ${PROJECT_SOURCE_DIR}")
+message(STATUS "==============================================================")
 message(STATUS "")
-
-
