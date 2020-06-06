@@ -28,6 +28,7 @@ set(BOOST_ROOT                 $ENV{BOOST_ROOT})
 set(FFTW_ROOT                  $ENV{FFTW_ROOT})
 set(METIS_ROOT                 $ENV{METIS_ROOT})
 set(NETCDF_ROOT                $ENV{NETCDF_ROOT})
+# must use the same HDF5 used to build NetCDF
 set(HDF5_ROOT                  $ENV{HDF5_ROOT})
 
 # polynomial order of spectral elements (from 1 to 8)
