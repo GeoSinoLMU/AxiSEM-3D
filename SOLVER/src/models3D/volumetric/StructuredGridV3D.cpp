@@ -80,15 +80,15 @@ mElementCenter(center) {
     }
     
     // init grid
-    std::vector<std::pair<std::string, double>> varInfo;
+    std::vector<std::pair<std::string, double>> data;
     for (int iprop = 0; iprop < propertyInfo.size(); iprop++) {
-        varInfo.push_back({mPropertyVarNames[iprop], mPropertyFactors[iprop]});
+        data.push_back({mPropertyVarNames[iprop], mPropertyFactors[iprop]});
     }
     mGrid = std::make_unique<StructuredGrid<3, double>>
-    (mFileName, mCrdVarNames, varInfo, shuffleData);
+    (mFileName, mCrdVarNames, data, shuffleData);
     // coordinate units
-    sg_tools::constructGridUnits(*mGrid, mSourceCentered, true,
-                                 lengthUnit, angleUnit);
+    sg_tools::constructUnits(*mGrid, mSourceCentered, true,
+                             lengthUnit, angleUnit);
     // longitude range
     mLon360 = sg_tools::constructLon360(*mGrid, mSourceCentered, mModelName);
 }
