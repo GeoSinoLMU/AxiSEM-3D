@@ -104,26 +104,27 @@ bool StructuredGridV3D::getProperties(const eigen::DMatX3 &spz,
     // check center
     const auto &gridCrds = mGrid->getGridCoords();
     if (mElementCenter) {
-        if (!sg_tools::coordsScope1D<eigen::DCol2>
-            (nodalSZ.rowwise().mean(), mUseDepth, mDepthSolid,
+        if (!inplaneScope<eigen::DCol2>
+            (nodalSZ.rowwise().mean(),
              mSourceCentered, gridCrds[0].front(), gridCrds[0].back(),
-             true, gridCrds[2].front(), gridCrds[2].back())) {
+             true, gridCrds[2].front(), gridCrds[2].back(),
+             mUseDepth, mDepthSolid)) {
             return false;
         }
     }
     
     // check min/max
-    if (!sg_tools::coordsScope1D
-        (nodalSZ, mUseDepth, mDepthSolid,
-         mSourceCentered, gridCrds[0].front(), gridCrds[0].back(),
-         true, gridCrds[2].front(), gridCrds[2].back())) {
+    if (!inplaneScope(nodalSZ,
+                      mSourceCentered, gridCrds[0].front(), gridCrds[0].back(),
+                      true, gridCrds[2].front(), gridCrds[2].back(),
+                      mUseDepth, mDepthSolid)) {
         return false;
     }
     
     // compute grid coords
-    eigen::DMatX3 crdGrid = sg_tools::
-    coordsToGrid(spz, mSourceCentered, mEllipticity, mLon360,
-                 mUseDepth, mDepthSolid, mModelName);
+    eigen::DMatX3 crdGrid =
+    coordsFromMeshToModel(spz, mSourceCentered, mEllipticity, mLon360,
+                          mUseDepth, mDepthSolid, mModelName);
     
     //////////////////////// values ////////////////////////
     // header
@@ -137,7 +138,7 @@ bool StructuredGridV3D::getProperties(const eigen::DMatX3 &spz,
     propValues = eigen::DMatXX::Zero(nCardinals, nProperties);
     
     // point loop
-    double err = std::numeric_limits<double>::lowest();
+    const static double err = std::numeric_limits<double>::lowest();
     const eigen::DRowX &valOut = eigen::DRowX::Constant(nProperties, err);
     for (int ipnt = 0; ipnt < nCardinals; ipnt++) {
         const eigen::DRowX &val = mGrid->compute(crdGrid.row(ipnt), valOut);
