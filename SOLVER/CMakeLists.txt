@@ -12,25 +12,6 @@
 ###################### Build Settings (EDIT BELOW) #####################
 ########################################################################
 
-# compiler suite
-set(CMAKE_C_COMPILER           mpicc)
-set(CMAKE_CXX_COMPILER         mpicxx)
-set(CMAKE_Fortran_COMPILER     gfortran)
-
-# preferred installation prefix of external packages
-# ** the roots can also be set by environment variables, e.g.,
-#    $ export EIGEN3_ROOT=$HOME/Developer/eigen3
-# ** by default, the following CMake variables are initialized by
-#    the environment variables; if specified otherwise, they will
-#    have priority over the environment variables
-set(EIGEN3_ROOT                $ENV{EIGEN3_ROOT})
-set(BOOST_ROOT                 $ENV{BOOST_ROOT})
-set(FFTW_ROOT                  $ENV{FFTW_ROOT})
-set(METIS_ROOT                 $ENV{METIS_ROOT})
-set(NETCDF_ROOT                $ENV{NETCDF_ROOT})
-# must use the same HDF5 used to build NetCDF
-set(HDF5_ROOT                  $ENV{HDF5_ROOT})
-
 # polynomial order of spectral elements (from 1 to 8)
 set(NPOL 4)
 
@@ -48,8 +29,29 @@ set(MEMORY_SAVING_MODE false)
 set(SERIAL_BUILD false)
 
 # use parallel NetCDF for output
-# ** Par-NetCDF is supported but not mandatory
+# ** parallel NetCDF is supported but not mandatory
 set(USE_PARALLEL_NETCDF false)
+
+
+# compiler suite
+set(CMAKE_C_COMPILER       mpicc)
+set(CMAKE_CXX_COMPILER     mpicxx)
+set(CMAKE_Fortran_COMPILER gfortran)
+
+
+# preferred installation prefix of external packages
+# ** the roots can also be set by environment variables, e.g.,
+#    $ export EIGEN3_ROOT=$HOME/Developer/eigen3
+# ** by default, the following CMake variables are initialized by
+#    the environment variables; if specified otherwise, they will
+#    have priority over the environment variables
+set(EIGEN3_ROOT $ENV{EIGEN3_ROOT})
+set(BOOST_ROOT  $ENV{BOOST_ROOT})
+set(FFTW_ROOT   $ENV{FFTW_ROOT})
+set(METIS_ROOT  $ENV{METIS_ROOT})
+set(NETCDF_ROOT $ENV{NETCDF_ROOT})
+# use the same HDF5 used to build NetCDF
+set(HDF5_ROOT   $ENV{HDF5_ROOT})
 
 # additional libraries to link to
 # ** add libs if linking fails with missing symbols, e.g., "-lcurl"
@@ -222,12 +224,23 @@ set_property(TARGET axisem3d PROPERTY CXX_STANDARD 17)
 string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_U)
 message(STATUS "")
 message(STATUS "========================== Summary ===========================")
-message("   Compilers_____________________________________________________")
-message("     C compiler         =  ${CMAKE_C_COMPILER}")
-message("     C++ compiler       =  ${CMAKE_CXX_COMPILER}")
-message("     Fortran compiler   =  ${CMAKE_Fortran_COMPILER}")
-message("     Build type         =  ${CMAKE_BUILD_TYPE}")
-message("     C++ Flags          =  ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE_U}}")
+message("   Compiler______________________________________________________")
+message("     C compiler          =  ${CMAKE_C_COMPILER}")
+message("     C++ compiler        =  ${CMAKE_CXX_COMPILER}")
+message("     Fortran compiler    =  ${CMAKE_Fortran_COMPILER}")
+message("     Build type          =  ${CMAKE_BUILD_TYPE}")
+message("     C++ Flags           =  ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE_U}}")
+message("     Source directory    =  ${PROJECT_SOURCE_DIR}")
+message("   Options_______________________________________________________")
+message("     SEM n-polynomial    =  ${NPOL}")
+if(${USE_DOUBLE})
+message("     Solver precision    =  double")
+else()
+message("     Solver precision    =  single")
+endif()
+message("     Memory-saving mode  =  ${MEMORY_SAVING_MODE}")
+message("     Build without mpi   =  ${SERIAL_BUILD}")
+message("     Parallel netcdf     =  ${USE_PARALLEL_NETCDF}")
 message("   Libraries_____________________________________________________")
 message("     * Eigen3")
 message("       user-specified root: ${EIGEN3_ROOT}")
@@ -253,16 +266,5 @@ message("       linked to libraries: ${HDF5_LIBRARIES}")
 message("                            ${HDF5_HL_LIBRARIES}")
 message("     * Others")
 message("       user-specified additional libraries: ${ADDITIONAL_LIBS}")
-message("   Options_______________________________________________________")
-message("     SEM n-polynomial    =  ${NPOL}")
-if(${USE_DOUBLE})
-message("     Solver precision    =  double")
-else()
-message("     Solver precision    =  single")
-endif()
-message("     Memory-saving mode  =  ${MEMORY_SAVING_MODE}")
-message("     Build without mpi   =  ${SERIAL_BUILD}")
-message("     Parallel netcdf     =  ${USE_PARALLEL_NETCDF}")
-message("     Source directory    =  ${PROJECT_SOURCE_DIR}")
 message(STATUS "==============================================================")
 message(STATUS "")
