@@ -13,9 +13,9 @@
 ########################################################################
 
 # compiler suite
-set(CMAKE_C_COMPILER       mpicc)
-set(CMAKE_CXX_COMPILER     mpicxx)
-set(CMAKE_Fortran_COMPILER gfortran)
+set(CMAKE_C_COMPILER            mpicc)
+set(CMAKE_CXX_COMPILER          mpicxx)
+set(CMAKE_Fortran_COMPILER      gfortran)
 
 # preferred installation prefix of external packages
 # ** the roots can also be set by environment variables, e.g.,
@@ -23,13 +23,13 @@ set(CMAKE_Fortran_COMPILER gfortran)
 # ** by default, the following CMake variables are initialized by
 #    the environment variables; if specified otherwise, they will
 #    have priority over the environment variables
-set(EIGEN3_ROOT $ENV{EIGEN3_ROOT})
-set(BOOST_ROOT  $ENV{BOOST_ROOT})
-set(FFTW_ROOT   $ENV{FFTW_ROOT})
-set(METIS_ROOT  $ENV{METIS_ROOT})
-set(NETCDF_ROOT $ENV{NETCDF_ROOT})
-# use the same HDF5 used to build NetCDF
-set(HDF5_ROOT   $ENV{HDF5_ROOT})
+set(EIGEN3_ROOT                 $ENV{EIGEN3_ROOT})
+set(BOOST_ROOT                  $ENV{BOOST_ROOT})
+set(FFTW_ROOT                   $ENV{FFTW_ROOT})
+set(METIS_ROOT                  $ENV{METIS_ROOT})
+set(NETCDF_ROOT                 $ENV{NETCDF_ROOT})
+# you must use the same HDF5 used to build NetCDF
+set(HDF5_ROOT                   $ENV{HDF5_ROOT})
 
 # additional libraries to link to
 # ** add libs if linking fails with missing symbols, e.g., "-lcurl"
@@ -66,14 +66,14 @@ set(USE_PARALLEL_NETCDF false)
 
 
 ################# cmake setup #################
-cmake_minimum_required(VERSION 3.8.0)
-project(AxiSEM3D)
-enable_language(Fortran)
-
 # use "Release" as the default build type
 if(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
 endif()
+
+cmake_minimum_required(VERSION 3.8.0)
+project(AxiSEM3D)
+enable_language(Fortran)
 
 # CMP0074 issue since CMake 3.12
 if(POLICY CMP0074)
@@ -219,7 +219,6 @@ set_property(TARGET axisem3d PROPERTY CXX_STANDARD 17)
 
 
 ################# summary #################
-string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_U)
 message(STATUS "")
 message(STATUS "========================== Summary ===========================")
 message("   Options_______________________________________________________")
@@ -237,7 +236,7 @@ message("     C compiler          =  ${CMAKE_C_COMPILER}")
 message("     C++ compiler        =  ${CMAKE_CXX_COMPILER}")
 message("     Fortran compiler    =  ${CMAKE_Fortran_COMPILER}")
 message("     Build type          =  ${CMAKE_BUILD_TYPE}")
-message("     C++ Flags           =  ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE_U}}")
+message("     C++ Flags           =  ${CMAKE_CXX_FLAGS}")
 message("     Source directory    =  ${PROJECT_SOURCE_DIR}")
 message("   Libraries_____________________________________________________")
 message("     * Eigen3")
