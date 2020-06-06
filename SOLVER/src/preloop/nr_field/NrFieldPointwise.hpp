@@ -17,7 +17,8 @@
 class NrFieldPointwise: public NrField {
 public:
     // constructor
-    NrFieldPointwise(const std::string &fname, double factor);
+    NrFieldPointwise(const std::string &fname, double factor,
+                     double distTolExact);
     
     // get nr by (s, z)
     eigen::IColX getNrAtPoints(const eigen::DMatX2_RM &sz) const;
@@ -31,6 +32,9 @@ private:
     
     // factor
     const double mFactor;
+    
+    // dist tolerance for exact match
+    const double mDistTolExact;
     
     // rtree
     std::unique_ptr<const RTreeND<2, 1, int>> mRTree = nullptr;

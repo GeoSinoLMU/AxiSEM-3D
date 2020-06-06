@@ -15,9 +15,11 @@
 #include "NrFieldPointwise.hpp"
 #include "NrFieldStructured.hpp"
 #include "timer.hpp"
+#include "ExodusMesh.hpp"
 
 // build from inparam
-std::unique_ptr<const NrField> NrField::buildInparam() {
+std::unique_ptr<const NrField> NrField::
+buildInparam(const ExodusMesh &exodusMesh) {
     // read type and lucky number
     const std::string &type = inparam::gInparamNr.
     getWithLimits<std::string>("type_Nr", {
@@ -41,7 +43,8 @@ std::unique_ptr<const NrField> NrField::buildInparam() {
         inparam::gInparamNr.get<std::string>("pointwise:nc_data_file");
         const double &factor =
         inparam::gInparamNr.get<double>("pointwise:multip_factor");
-        nrField = std::make_unique<const NrFieldPointwise>(fname, factor);
+        nrField = std::make_unique<const NrFieldPointwise>
+        (fname, factor, exodusMesh.getGlobalVariable("dist_tolerance"));
         
     } else if (type == "STRUCTURED") {
         const std::string &fname =

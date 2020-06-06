@@ -13,6 +13,9 @@
 
 #include "eigen_generic.hpp"
 
+// need distance tolerance for NrFieldPointwise
+class ExodusMesh;
+
 namespace eigen {
     // coords
     typedef Eigen::Matrix<double, Eigen::Dynamic, 2, Eigen::RowMajor> DMatX2_RM;
@@ -33,7 +36,8 @@ public:
     ////////////////////////////// static //////////////////////////////
 public:
     // build from inparam
-    static std::unique_ptr<const NrField> buildInparam();
+    static std::unique_ptr<const NrField>
+    buildInparam(const ExodusMesh &exodusMesh);
     
     // is lucky number
     static bool isLuckyNumber(int n);

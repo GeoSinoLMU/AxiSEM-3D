@@ -268,7 +268,8 @@ eigen::DColX computeNrFieldAndWeights(ExodusMesh &exodusMesh) {
     mpi::enterSuper();
     if (mpi::super()) {
         // create nr field on super (timer inside)
-        std::unique_ptr<const NrField> nrField = NrField::buildInparam();
+        std::unique_ptr<const NrField> nrField =
+        NrField::buildInparam(exodusMesh);
         if (io::gVerbose != io::VerboseLevel::None) {
             io::cout << nrField->verbose();
         }
