@@ -222,3 +222,22 @@ ${ADDITIONAL_LIBS}
 
 # standard C++17
 set_property(TARGET axisem3d PROPERTY CXX_STANDARD 17)
+
+
+################# summary #################
+message(STATUS "")
+message(STATUS "=================== Summary of libraries ===================")
+message(STATUS "* Eigen3:")
+message(STATUS "  provided root: ${EIGEN3_ROOT}")
+message(STATUS "  using include: ${EIGEN3_INCLUDE_DIR}")
+message(STATUS "* Boost:")
+message(STATUS "  provided root: ${BOOST_ROOT}")
+message(STATUS "  using include: ${Boost_INCLUDE_DIR}")
+message(STATUS "* FFTW3:")
+message(STATUS "  provided root: ${FFTW_ROOT}")
+message(STATUS "  using include: ${FFTW_INCLUDE_DIR}")
+message(STATUS "  using library: ${FFTW_LIBRARIES}")
+message(STATUS "============================================================")
+message(STATUS "")
+
+
