@@ -48,21 +48,21 @@ class RTreeND {
     
     ///////////// cs array to RTreeLoc /////////////
     // 1D
-    template <int R = D, typename csArray>
+    template <int R = D, typename ArrayCS>
     static typename std::enable_if<R == 1,
-    RTreeLoc>::type toRTreeLoc(const csArray &loc) {
+    RTreeLoc>::type toRTreeLoc(const ArrayCS &loc) {
         return RTreeLoc(loc[0]);
     }
     // 2D
-    template <int R = D, typename csArray>
+    template <int R = D, typename ArrayCS>
     static typename std::enable_if<R == 2,
-    RTreeLoc>::type toRTreeLoc(const csArray &loc) {
+    RTreeLoc>::type toRTreeLoc(const ArrayCS &loc) {
         return RTreeLoc(loc[0], loc[1]);
     }
     // 3D
-    template <int R = D, typename csArray>
+    template <int R = D, typename ArrayCS>
     static typename std::enable_if<R == 3,
-    RTreeLoc>::type toRTreeLoc(const csArray &loc) {
+    RTreeLoc>::type toRTreeLoc(const ArrayCS &loc) {
         return RTreeLoc(loc[0], loc[1], loc[2]);
     }
     
@@ -121,15 +121,15 @@ public:
     }
     
     // add a leaf
-    template <typename csArray>
-    void addLeaf(const csArray &loc, const TRowV &val) {
+    template <typename ArrayCS>
+    void addLeaf(const ArrayCS &loc, const TRowV &val) {
         mRTree.insert({toRTreeLoc(loc), val});
     }
     
     // add scalar, only for V = 1
-    template <int VN = V, typename csArray>
+    template <int VN = V, typename ArrayCS>
     typename std::enable_if<VN == 1, void>::type
-    addLeaf(const csArray &loc, T val) {
+    addLeaf(const ArrayCS &loc, T val) {
         static TRowV inVal;
         inVal(0) = val;
         addLeaf(loc, inVal);
@@ -144,8 +144,8 @@ public:
     
     // query
     // difficult to make this collective
-    template <typename csArray>
-    void query(const csArray &loc, int count,
+    template <typename ArrayCS>
+    void query(const ArrayCS &loc, int count,
                std::vector<double> &dists, std::vector<TRowV> &vals) const {
         // location
         const RTreeLoc &rloc = toRTreeLoc(loc);
@@ -163,8 +163,8 @@ public:
     }
     
     // compute
-    template <typename csArray>
-    TRowV compute(const csArray &loc, int count,
+    template <typename ArrayCS>
+    TRowV compute(const ArrayCS &loc, int count,
                   double maxDistInRange,
                   const TRowV &valueForOutOfRange) const {
         // query
@@ -208,9 +208,9 @@ public:
     }
     
     // compute scalar, only for V = 1
-    template <int VN = V, typename csArray>
+    template <int VN = V, typename ArrayCS>
     typename std::enable_if<VN == 1, T>::type
-    compute(const csArray &loc, int count,
+    compute(const ArrayCS &loc, int count,
             double maxDistInRange, T valueForOutOfRange) const {
         static TRowV outVal;
         outVal(0) = valueForOutOfRange;
