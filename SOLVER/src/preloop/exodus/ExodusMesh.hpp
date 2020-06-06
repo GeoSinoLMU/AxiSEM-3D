@@ -58,10 +58,10 @@ public:
     ///////////////// nr field /////////////////
     // Nr at nodes
     void formNrAtNodes(const NrField &nrField,
-                       bool limitByInplane, bool useLuckyNumbers);
+                       bool boundByInplane, bool useLuckyNumbers);
     
     // verbose Nr
-    std::string verboseNr(bool limitByInplane, bool useLuckyNumbers) const;
+    std::string verboseNr(bool boundByInplane, bool useLuckyNumbers) const;
     
     
     ////////////////////////////////////////////
