@@ -219,15 +219,15 @@ set_property(TARGET axisem3d PROPERTY CXX_STANDARD 17)
 
 
 ################# summary #################
+string(TOUPPER ${CMAKE_BUILD_TYPE} CMAKE_BUILD_TYPE_U)
 message(STATUS "")
 message(STATUS "========================== Summary ===========================")
 message("   Compilers_____________________________________________________")
 message("     C compiler         =  ${CMAKE_C_COMPILER}")
 message("     C++ compiler       =  ${CMAKE_CXX_COMPILER}")
 message("     Fortran compiler   =  ${CMAKE_Fortran_COMPILER}")
-message("     Flags for Release  =  ${CMAKE_C_FLAGS_RELEASE}")
-message("     Flags for Debug    =  ${CMAKE_C_FLAGS_DEBUG}")
 message("     Build type         =  ${CMAKE_BUILD_TYPE}")
+message("     C++ Flags          =  ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE_U}}")
 message("   Libraries_____________________________________________________")
 message("     * Eigen3")
 message("       user-specified root: ${EIGEN3_ROOT}")
