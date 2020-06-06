@@ -73,16 +73,16 @@ public:
     RTreeND() = default;
     
     // constructor
-    RTreeND(const std::string &ncfile, const std::string &coordVarName,
+    RTreeND(const std::string &ncFile, const std::string &coordVarName,
             const std::array<std::pair<std::string, double>, V> &varInfo) {
         // read data
         DMatXD_RM ctrlCrds;
         TMatXV_RM ctrlVals;
         timer::gPreloopTimer.begin("Reading control-point data");
-        timer::gPreloopTimer.message("data file: " + io::popInputDir(ncfile));
+        timer::gPreloopTimer.message("data file: " + io::popInputDir(ncFile));
         if (mpi::root()) {
             // open
-            NetCDF_Reader reader(io::popInputDir(ncfile));
+            NetCDF_Reader reader(io::popInputDir(ncFile));
             // read coords
             reader.readMatrixDouble(coordVarName, ctrlCrds);
             // read data
@@ -154,49 +154,50 @@ public:
         mRTree.query(boost::geometry::index::nearest(rloc, count),
                      std::back_inserter(leafs));
         // get distance
+        dists.clear();
+        dists.reserve(count);
         std::transform(leafs.begin(), leafs.end(), std::back_inserter(dists),
                        [&rloc](const auto &leaf) {
             return boost::geometry::distance(leaf.first, rloc);});
         // get values
+        vals.clear();
+        vals.reserve(count);
         std::transform(leafs.begin(), leafs.end(), std::back_inserter(vals),
                        [](const auto &leaf) {return leaf.second;});
     }
     
     // compute
     template <typename ArrayCS>
-    TRowV compute(const ArrayCS &loc, int count,
-                  double maxDistInRange,
-                  const TRowV &valueForOutOfRange) const {
+    TRowV compute(const ArrayCS &loc, int count, double maxDistInRange,
+                  const TRowV &valOutOfRange, double distTolExact) const {
         // query
-        std::vector<double> dists;
-        std::vector<TRowV> vals;
+        static std::vector<double> dists;
+        static std::vector<TRowV> vals;
         query(loc, count, dists, vals);
         
-        // average by inverse distance
+        // average vaules by inverse distance
         double invDistSum = 0.;
-        DRowV valTarget = DRowV::Zero();
-        int inRange = 0;
+        static DRowV valTarget;
+        valTarget.setZero();
+        int numInRange = 0;
         for (int ip = 0; ip < dists.size(); ip++) {
+            // exactly on a leaf
+            if (dists[ip] < distTolExact) {
+                return vals[ip];
+            }
             // out of range
             if (dists[ip] > maxDistInRange) {
                 continue;
             }
-            // exactly on a leaf
-            if (dists[ip] < numerical::dEpsilon) {
-                invDistSum = 1.;
-                valTarget = vals[ip].template cast<double>();
-                inRange = 1;
-                break;
-            }
             // weight by inverse distance
             invDistSum += 1. / dists[ip];
             valTarget += vals[ip].template cast<double>() / dists[ip];
-            inRange++;
+            numInRange++;
         }
         
         // out of range
-        if (inRange == 0) {
-            return valueForOutOfRange;
+        if (numInRange == 0) {
+            return valOutOfRange;
         }
         
         // average and round
@@ -210,11 +211,11 @@ public:
     // compute scalar, only for V = 1
     template <int VN = V, typename ArrayCS>
     typename std::enable_if<VN == 1, T>::type
-    compute(const ArrayCS &loc, int count,
-            double maxDistInRange, T valueForOutOfRange) const {
-        static TRowV outVal;
-        outVal(0) = valueForOutOfRange;
-        return compute(loc, count, maxDistInRange, outVal)(0);
+    compute(const ArrayCS &loc, int count, double maxDistInRange,
+            T valOutOfRange, double distTolExact) const {
+        static TRowV valOut;
+        valOut(0) = valOutOfRange;
+        return compute(loc, count, maxDistInRange, valOut, distTolExact)(0);
     }
     
     // size
