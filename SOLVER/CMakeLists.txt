@@ -13,9 +13,9 @@
 ########################################################################
 
 # compiler suite
-set(CMAKE_C_COMPILER            mpicc)
-set(CMAKE_CXX_COMPILER          mpicxx)
-set(CMAKE_Fortran_COMPILER      gfortran)
+set(CMAKE_C_COMPILER            $ENV{cc})
+set(CMAKE_CXX_COMPILER          $ENV{cxx})
+set(CMAKE_Fortran_COMPILER      $ENV{ftn})
 
 # preferred installation prefix of external packages
 # ** the roots can also be set by environment variables, e.g.,
