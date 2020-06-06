@@ -74,6 +74,7 @@ bool StructuredGridO3D::getSumRowDepth(const eigen::DMatX3 &spz,
 
 // verbose
 std::string StructuredGridO3D::verbose() const {
+    using namespace bstring;
     std::stringstream ss;
     // head
     ss << sg_tools::verboseHead(mModelName, "StructuredGridO3D", mFileName);
@@ -89,16 +90,13 @@ std::string StructuredGridO3D::verbose() const {
     int width = 15;
     if (!mSourceCentered) {
         width = 22;
-        ss << bstring::boxEquals(4, width, "ellipticity correction",
-                                 mEllipticity);
+        ss << boxEquals(4, width, "ellipticity correction", mEllipticity);
     }
     
     // data
-    ss << bstring::boxSubTitle(2, "Data for sum(rho * depth)");
-    ss << bstring::boxEquals(4, width, "NetCDF variable", mDataVarName);
-    typedef Eigen::Tensor<double, 0, Eigen::RowMajor> Tensor0;
-    double min = ((Tensor0)mGrid->getGridData().minimum())(0);
-    double max = ((Tensor0)mGrid->getGridData().maximum())(0);
-    ss << bstring::boxEquals(4, width, "data range", bstring::range(min, max));
+    ss << boxSubTitle(2, "Data for sum(rho * depth)");
+    ss << boxEquals(4, width, "NetCDF variable", mDataVarName);
+    const auto &minMax = mGrid->getDataRange();
+    ss << boxEquals(4, width, "data range", range(minMax(0, 0), minMax(0, 1)));
     return ss.str();
 }

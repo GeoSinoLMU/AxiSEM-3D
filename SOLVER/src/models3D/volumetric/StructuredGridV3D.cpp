@@ -186,6 +186,7 @@ bool StructuredGridV3D::getProperties(const eigen::DMatX3 &spz,
 
 // verbose
 std::string StructuredGridV3D::verbose() const {
+    using namespace bstring;
     std::stringstream ss;
     // head
     ss << sg_tools::verboseHead(mModelName, "StructuredGridV3D", mFileName);
@@ -200,20 +201,18 @@ std::string StructuredGridV3D::verbose() const {
     
     // options
     if (!mSourceCentered) {
-        ss << bstring::boxEquals(4, 29, "ellipticity correction", mEllipticity);
+        ss << boxEquals(4, 29, "ellipticity correction", mEllipticity);
     }
     if (mUseDepth) {
-        ss << bstring::boxEquals(4, 29, "depth below solid surface",
-                                 mDepthSolid);
+        ss << boxEquals(4, 29, "depth below solid surface", mDepthSolid);
     } else {
-        ss << bstring::boxEquals(4, 29, "radial geometry", mUndulatedGeometry ?
-                                 "undulated" : "reference");
+        ss << boxEquals(4, 29, "radial geometry", mUndulatedGeometry ?
+                        "undulated" : "reference");
     }
-    ss << bstring::boxEquals(4, 29, "force element center in scope",
-                             mElementCenter);
+    ss << boxEquals(4, 29, "force element center in scope", mElementCenter);
     
     // properties
-    ss << bstring::boxSubTitle(2, "Properties");
+    ss << boxSubTitle(2, "Properties");
     // width
     int widthK = std::max(vector_tools::maxLength(mPropertyKeys), 3);
     int widthV = std::max(vector_tools::maxLength(mPropertyVarNames), 6);
@@ -222,22 +221,14 @@ std::string StructuredGridV3D::verbose() const {
     ss << std::setw(widthK) << "KEY" << " | ";
     ss << std::setw(widthV) << "NC-VAR" << " | ";
     ss << "REF KIND" << " | " << "RANGE" << "\n";
-    Eigen::array<Eigen::DenseIndex, 4> start, count;
-    start.fill(0);
-    count = mGrid->getGridData().dimensions();
-    count[0] = 1;
+    const auto &minMax = mGrid->getDataRange();
     for (int iprop = 0; iprop < mPropertyKeys.size(); iprop++) {
         ss << "    * " << std::left;
         ss << std::setw(widthK) << mPropertyKeys[iprop] << " | ";
         ss << std::setw(widthV) << mPropertyVarNames[iprop] << " | ";
         ss << std::setw(8) <<
         sReferenceKindStr.at(mPropertyReferenceKinds[iprop]) << " | ";
-        start[0] = iprop;
-        const auto &sliced = mGrid->getGridData().slice(start, count);
-        typedef Eigen::Tensor<double, 0, Eigen::RowMajor> Tensor0;
-        double min = ((Tensor0)sliced.minimum())(0);
-        double max = ((Tensor0)sliced.maximum())(0);
-        ss << bstring::range(min, max) << "\n";
+        ss << range(minMax(iprop, 0), minMax(iprop, 1)) << "\n";
     }
     return ss.str();
 }

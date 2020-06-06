@@ -92,6 +92,7 @@ bool StructuredGridG3D::getUndulation(const eigen::DMatX3 &spz,
 
 // verbose
 std::string StructuredGridG3D::verbose() const {
+    using namespace bstring;
     std::stringstream ss;
     // head
     ss << sg_tools::verboseHead(mModelName, "StructuredGridG3D", mFileName);
@@ -111,24 +112,20 @@ std::string StructuredGridG3D::verbose() const {
         width = 25;
     }
     // interface
-    ss << bstring::boxEquals(4, width, mUseDepth ? "interface depth" :
-                             "interface radius", mInterface);
+    ss << boxEquals(4, width, mUseDepth ? "interface depth" :
+                    "interface radius", mInterface);
     // options
     if (!mSourceCentered) {
-        ss << bstring::boxEquals(4, width, "ellipticity correction",
-                                 mEllipticity);
+        ss << boxEquals(4, width, "ellipticity correction", mEllipticity);
     }
     if (mUseDepth) {
-        ss << bstring::boxEquals(4, width, "depth below solid surface",
-                                 mDepthSolid);
+        ss << boxEquals(4, width, "depth below solid surface", mDepthSolid);
     }
     
     // undulation
-    ss << bstring::boxSubTitle(2, "Undulation data");
-    ss << bstring::boxEquals(4, width, "NetCDF variable", mDataVarName);
-    typedef Eigen::Tensor<double, 0, Eigen::RowMajor> Tensor0;
-    double min = ((Tensor0)mGrid->getGridData().minimum())(0);
-    double max = ((Tensor0)mGrid->getGridData().maximum())(0);
-    ss << bstring::boxEquals(4, width, "data range", bstring::range(min, max));
+    ss << boxSubTitle(2, "Undulation data");
+    ss << boxEquals(4, width, "NetCDF variable", mDataVarName);
+    const auto &minMax = mGrid->getDataRange();
+    ss << boxEquals(4, width, "data range", range(minMax(0, 0), minMax(0, 1)));
     return ss.str();
 }
