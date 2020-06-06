@@ -31,6 +31,10 @@ set(NETCDF_ROOT $ENV{NETCDF_ROOT})
 # use the same HDF5 used to build NetCDF
 set(HDF5_ROOT   $ENV{HDF5_ROOT})
 
+# additional libraries to link to
+# ** add libs if linking fails with missing symbols, e.g., "-lcurl"
+set(ADDITIONAL_LIBS "-lcurl")
+
 # polynomial order of spectral elements (from 1 to 8)
 set(NPOL 4)
 
@@ -50,10 +54,6 @@ set(SERIAL_BUILD false)
 # use parallel NetCDF for output
 # ** parallel NetCDF is supported but not mandatory
 set(USE_PARALLEL_NETCDF false)
-
-# additional libraries to link to
-# ** add libs if linking fails with missing symbols, e.g., "-lcurl"
-set(ADDITIONAL_LIBS "-lcurl")
 
 ########################################################################
 ###################### Build Settings (EDIT ABOVE) #####################
