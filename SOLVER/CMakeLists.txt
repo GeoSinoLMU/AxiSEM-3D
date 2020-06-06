@@ -13,6 +13,7 @@
 ########################################################################
 
 # compiler suite
+# ** initialized by environment variables cc, cxx and ftn by default
 set(CMAKE_C_COMPILER            $ENV{cc})
 set(CMAKE_CXX_COMPILER          $ENV{cxx})
 set(CMAKE_Fortran_COMPILER      $ENV{ftn})
