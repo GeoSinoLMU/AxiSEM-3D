@@ -27,10 +27,10 @@ mInterface(interface * lengthUnit),
 mMin(min * lengthUnit), mMax(max * lengthUnit),
 mDataVarName(dataVarName), mFactor(factor) {
     // init grid
-    std::vector<std::pair<std::string, double>> varInfo;
-    varInfo.push_back({mDataVarName, mFactor});
+    std::vector<std::pair<std::string, double>> dataInfo;
+    dataInfo.push_back({mDataVarName, mFactor});
     mGrid = std::make_unique<StructuredGrid<2, double>>
-    (mFileName, mCrdVarNames, varInfo, shuffleData);
+    (mFileName, mCrdVarNames, dataInfo, shuffleData);
     // coordinate units
     sg_tools::constructUnits(*mGrid, mSourceCentered, false,
                              lengthUnit, angleUnit);
