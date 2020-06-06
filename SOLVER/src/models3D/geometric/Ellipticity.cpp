@@ -19,8 +19,8 @@ bool Ellipticity::getUndulation(const eigen::DMatX3 &spz,
         return false;
     }
     // theta, phi, r
-    const eigen::DMatX3 &llr = sg_tools::coordsToGrid(spz, false, false, false,
-                                                      false, false, mModelName);
+    const eigen::DMatX3 &llr = coordsFromMeshToModel(spz, false, false, false,
+                                                     false, false, mModelName);
     const eigen::DMatX3 &tpr = geodesy::llr2tpr(llr, false);
     // flattening
     typedef Eigen::Array<double, Eigen::Dynamic, 1> DColX_Array;

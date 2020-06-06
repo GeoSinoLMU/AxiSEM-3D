@@ -21,13 +21,6 @@ public:
     }
     
 private:
-    // get undulation on an element
-    bool getUndulation(const eigen::DMatX3 &spz,
-                       const eigen::DMat24 &nodalSZ,
-                       eigen::DColX &undulation) const {
-        return getUndulation(spz, undulation);
-    }
-    
     // get undulation on points
     bool getUndulation(const eigen::DMatX3 &spz,
                        eigen::DColX &undulation) const;
