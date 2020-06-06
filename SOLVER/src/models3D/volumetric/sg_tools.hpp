@@ -80,9 +80,10 @@ namespace sg_tools {
     
     
     ////////////////////////// construct //////////////////////////
+    // coord units
     template <class Grid>
-    void constructGridUnits(Grid &grid, bool sourceCentered, bool vertical,
-                            double lengthUnit, double angleUnit) {
+    void constructUnits(Grid &grid, bool sourceCentered, bool vertical,
+                        double lengthUnit, double angleUnit) {
         // transform lambda expr
         auto vectorTimesFactor = [](std::vector<double> &vec, double factor) {
             std::transform(vec.begin(), vec.end(), vec.begin(),
@@ -112,6 +113,7 @@ namespace sg_tools {
         }
     }
     
+    // longitude range
     template <class Grid>
     bool constructLon360(const Grid &grid, bool sourceCentered,
                          const std::string &modelName) {
@@ -123,101 +125,11 @@ namespace sg_tools {
         if (lon.front() < 0. - numerical::dEpsilon &&
             lon.back() > 180. + numerical::dEpsilon) {
             throw std::runtime_error
-            ("sg_tools::checkLon360 || "
+            ("sg_tools::constructLon360 || "
              "Longitude range must be either [-180, 180] or [0, 360]. || "
              "Model name = " + modelName);
         }
         return (lon.back() > 180. + numerical::dEpsilon);
-    }
-    
-    
-    ////////////////////////// coords //////////////////////////
-    // check scope 1D
-    template <class Mat2X>
-    bool coordsScope1D(const Mat2X &sz, bool useDepth, bool depthSolid,
-                       bool checkR, double minR, double maxR,
-                       bool checkZ, double minZ, double maxZ) {
-        // compute grid CS
-        Mat2X gcrd;
-        if (geodesy::isCartesian()) {
-            gcrd = sz;
-        } else {
-            // sz -> tr
-            gcrd = geodesy::sz2rtheta(sz, false, 0, 1, 1, 0);
-        }
-        // radius -> depth
-        if (useDepth) {
-            double router = (depthSolid ? geodesy::getOuterSolidRadius() :
-                             geodesy::getOuterRadius());
-            gcrd.row(1) = router - gcrd.row(1).array();
-        }
-        // check R
-        if (checkR) {
-            if (gcrd.row(0).maxCoeff() < minR ||
-                gcrd.row(0).minCoeff() > maxR) {
-                return false;
-            }
-        }
-        // check Z
-        if (checkZ) {
-            if (gcrd.row(1).maxCoeff() < minZ ||
-                gcrd.row(1).minCoeff() > maxZ) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    // compute grid coords
-    inline eigen::DMatX3
-    coordsToGrid(const eigen::DMatX3 &spz,
-                 bool sourceCentered, bool ellipticity, bool lon360,
-                 bool useDepth, bool depthSolid,
-                 const std::string &modelName) {
-        eigen::DMatX3 crdGrid;
-        if (sourceCentered) {
-            if (geodesy::isCartesian()) {
-                crdGrid = spz;
-            } else {
-                // spz -> RTZ
-                crdGrid = geodesy::sz2rtheta(spz, true, 0, 2, 2, 0);
-                crdGrid.col(1) = spz.col(1);
-            }
-        } else {
-            // correct spz for Cartesian
-            // NOTE: Geographic and Cartesian contradict each other.
-            //       We correct spz using s as arc-length and z as radius.
-            //       Without such "bending", sqrt(s*s+z*z) on the surface
-            //       will exceed the outer radius.
-            if (geodesy::isCartesian()) {
-                // z must be significantly larger than s
-                if ((spz.array().col(2) < spz.array().col(0) * 10.).any()) {
-                    throw std::runtime_error
-                    ("sg_tools::computeGridCoords || "
-                     "Invalid geographic location in Cartesian mesh. || "
-                     "Set PLANET_RADIUS in Salvus mesher data file (*.bm). || "
-                     "Model name = " + modelName);
-                }
-                eigen::DMatX3 spzBend(spz.rows(), spz.cols());
-                const auto &t = spz.col(0).cwiseQuotient(spz.col(2));
-                spzBend.col(0) = spz.col(2).array() * t.array().sin();
-                spzBend.col(2) = spz.col(2).array() * t.array().cos();
-                spzBend.col(1) = spz.col(1);
-                // spz to lat, lon, r
-                crdGrid = geodesy::spz2llr(spzBend, ellipticity, lon360);
-            } else {
-                // spz to lat, lon, r
-                crdGrid = geodesy::spz2llr(spz, ellipticity, lon360);
-            }
-        }
-        
-        // depth (must be in reference geometry)
-        if (useDepth) {
-            double R = (depthSolid ? geodesy::getOuterSolidRadius() :
-                        geodesy::getOuterRadius());
-            crdGrid.col(2).array() = R - crdGrid.col(2).array();
-        }
-        return crdGrid;
     }
     
     
