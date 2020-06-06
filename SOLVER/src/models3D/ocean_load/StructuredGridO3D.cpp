@@ -22,13 +22,13 @@ OceanLoad3D(modelName), mFileName(fname), mCrdVarNames(crdVarNames),
 mSourceCentered(sourceCentered), mEllipticity(ellipticity),
 mDataVarName(dataVarName), mFactor(factor) {
     // init grids
-    std::vector<std::pair<std::string, double>> varInfo;
-    varInfo.push_back({mDataVarName, mFactor});
+    std::vector<std::pair<std::string, double>> dataInfo;
+    dataInfo.push_back({mDataVarName, mFactor});
     mGrid = std::make_unique<StructuredGrid<2, double>>
-    (mFileName, mCrdVarNames, varInfo, shuffleData);
+    (mFileName, mCrdVarNames, dataInfo, shuffleData);
     // coordinate units
-    sg_tools::constructGridUnits(*mGrid, mSourceCentered, false,
-                                 lengthUnit, angleUnit);
+    sg_tools::constructUnits(*mGrid, mSourceCentered, false,
+                             lengthUnit, angleUnit);
     // longitude range
     mLon360 = sg_tools::constructLon360(*mGrid, mSourceCentered, mModelName);
 }
@@ -40,17 +40,16 @@ bool StructuredGridO3D::getSumRowDepth(const eigen::DMatX3 &spz,
     //////////////////////// coords ////////////////////////
     // check min/max
     const auto &gridCrds = mGrid->getGridCoords();
-    if (!sg_tools::coordsScope1D
-        (nodalSZ, false, false,
-         mSourceCentered, gridCrds[0].front(), gridCrds[0].back(),
-         false, 0., 0.)) {
+    if (!inplaneScope(nodalSZ,
+                      mSourceCentered, gridCrds[0].front(), gridCrds[0].back(),
+                      false, 0., 0., false, false)) {
         return false;
     }
     
     // compute grid coords
-    const eigen::DMatX3 &crdGrid = sg_tools::
-    coordsToGrid(spz, mSourceCentered, mEllipticity, mLon360,
-                 false, false, mModelName);
+    const eigen::DMatX3 &crdGrid =
+    coordsFromMeshToModel(spz, mSourceCentered, mEllipticity, mLon360,
+                          false, false, mModelName);
     
     //////////////////////// values ////////////////////////
     // allocate and fill with zero
@@ -58,7 +57,7 @@ bool StructuredGridO3D::getSumRowDepth(const eigen::DMatX3 &spz,
     sumRowDepth = eigen::DColX::Zero(nCardinals);
     
     // point loop
-    double err = std::numeric_limits<double>::lowest();
+    static const double err = std::numeric_limits<double>::lowest();
     bool oneInScope = false;
     for (int ipnt = 0; ipnt < nCardinals; ipnt++) {
         const eigen::DRow2 &horizontal = crdGrid.block(ipnt, 0, 1, 2);
