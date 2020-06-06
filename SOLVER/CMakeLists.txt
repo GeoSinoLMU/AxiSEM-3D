@@ -14,9 +14,9 @@
 
 # compiler suite
 # ** either edit here or pass by -Dcc, -Dcxx and -Dftn after cmake
-set(CMAKE_C_COMPILER            cc)
-set(CMAKE_CXX_COMPILER          cxx)
-set(CMAKE_Fortran_COMPILER      ftn)
+set(CMAKE_C_COMPILER            ${cc})
+set(CMAKE_CXX_COMPILER          ${cxx})
+set(CMAKE_Fortran_COMPILER      ${ftn})
 
 # preferred installation prefix of external packages
 # ** the roots can also be set by environment variables, e.g.,
