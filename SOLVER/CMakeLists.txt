@@ -13,7 +13,7 @@
 ########################################################################
 
 # compiler suite
-# ** either edit here or pass by -Dcc, -Dcxx and -Dftn after cmake
+# ** either hardcode here or pass by -Dcc, -Dcxx and -Dftn after cmake
 set(CMAKE_C_COMPILER            ${cc})
 set(CMAKE_CXX_COMPILER          ${cxx})
 set(CMAKE_Fortran_COMPILER      ${ftn})
