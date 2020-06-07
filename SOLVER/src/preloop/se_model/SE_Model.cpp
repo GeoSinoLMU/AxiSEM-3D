@@ -546,7 +546,7 @@ computeInplaneFactor(const eigen::DCol2 &sz, int iquad) const {
         const eigen::DColP &weightsEta =
         interpLagrange(xieta(1), spectrals::gPositionsGLL);
         return Eigen::Map<const eigen::DRowN>
-        ((weightsXi * weightsEta.transpose()).eval().data());
+        (eigen::DMatPP_RM(weightsXi * weightsEta.transpose()).data());
     } else {
         throw std::runtime_error("SE_Model::computeInterpFactor || "
                                  "Location is not in the given quad.");
