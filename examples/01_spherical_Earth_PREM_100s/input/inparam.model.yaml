@@ -73,7 +73,7 @@ absorbing_boundary:
         # type: array of double
         # note: 1) given in the same order as absorbing_boundaries
         #       2) absolute span = relative span * mesh span
-        relative_spans: []
+        relative_spans: [.05]
         
         # what: U0's of the sponge layers
         # type: array of double
@@ -81,7 +81,7 @@ absorbing_boundary:
         #       2) U0 is the attenuation strength at the outermost
         #          part of a sponge layer (on the model boundary);
         #          the strength at the innermost part is 0
-        U0: []
+        U0: [.1]
 
 
 ######################## attenuation ########################
