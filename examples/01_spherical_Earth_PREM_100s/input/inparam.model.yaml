@@ -23,9 +23,9 @@ geodesy:
     # type: array of double / SOURCE
     # note: 1) this reference location enables the usage of geographic
     #          coordinates for locating sources, receivers and 3D models,
-    #          compatible with Cartesian models
+    #          compatible with Cartesian meshes
     #       2) array of double: [latitude, longitude]
-    #       3) SOURCE: automatically determined by the FIRST source
+    #       3) SOURCE: determined this location by the FIRST source
     #                  presented in list_of_sources in inparam.source.yaml;
     #                  always use SOURCE for a single-source simulation
     lat_lon_north_pole_mesh: SOURCE
@@ -33,13 +33,13 @@ geodesy:
     # what: flattening on the surface
     # type: string / double
     # only: SPHERE / WGS84 / GRS80 / SPECFEM3D_GLOBE / value
-    # note: 1) ellipticity is ignored for Cartesian models
+    # note: 1) ellipticity is ignored for a Cartesian mesh
     #       2) 0 for a perfect sphere; ~0.0033 for the Earth
     #       3) ellipticity will be used in the transformation between
     #          the geographic and the geocentric co-latitudes;
     #          see eq. (14.32) in Dahlen & Tromp, 1998
-    #       4) to actually deform the entire mesh, add the model
-    #          "ellipticity" to list_of_3D_models
+    #       4) to actually deform the entire mesh, add 3D model
+    #          "Ellipticity" to list_of_3D_models
     flattening_on_surface: WGS84
 
 
@@ -55,7 +55,7 @@ absorbing_boundary:
     #       2) use [] to disable absorbing boundary condition
     #          (so that all model boundaries will be stress-free)
     #       3) the most common case in seismology is [RIGHT, BOTTOM]
-    boundaries: []
+    boundaries: [RIGHT, BOTTOM]
     
     # what: enable the Clayton-Enquist approach
     # type: bool
@@ -73,14 +73,14 @@ absorbing_boundary:
         # type: array of double
         # note: 1) given in the same order as absorbing_boundaries
         #       2) absolute span = relative span * mesh span
-        relative_spans: []
+        relative_spans: [.05, .05]
         
         # what: U0's of the sponge layers
         # type: array of double
         # note: 1) given in the same order as absorbing_boundaries
-        #       2) U0 is the attenuation strength at the outermost
-        #          part of a sponge layer (on the model boundary);
-        #          the strength at the innermost part is 0
+        #       2) U0 is the attenuation strength on the outermost edge
+        #          of a sponge layer (i.e., on the mesh boundary);
+        #          the strength on the innermost edge is 0
         U0: []
 
 
