@@ -415,7 +415,7 @@ void Source::release(const SE_Model &sem, Domain &domain, double dt,
         }
         
         // verbose
-        ss << bstring::boxTitle("Source");
+        ss << bstring::boxTitle("Sources");
         for (int sindex = 0; sindex < sourceCount; sindex++) {
             ss << flat.at(sindex);
         }

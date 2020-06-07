@@ -388,6 +388,9 @@ void Stations::release(const SE_Model &sem, Domain &domain, double dt,
     
     // verbose
     if (io::gVerbose != io::VerboseLevel::None && mpi::root()) {
+        if (groupCount == 0) {
+            ss << "* No station groups in this simulation.\n";
+        }
         ss << boxBaseline() << "\n\n";
         io::cout << ss.str();
     }
