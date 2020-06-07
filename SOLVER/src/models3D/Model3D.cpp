@@ -52,12 +52,6 @@ void Model3D::
 buildInparam(const ExodusMesh &exodusMesh, const LocalMesh &localMesh,
              std::vector<std::shared_ptr<const Model3D>> &models3D,
              bool rebuilding) {
-    // check empty
-    if (inparam::gInparamModel.
-        get<std::string>("list_of_3D_models") == "NONE") {
-        return;
-    }
-    
     // count
     int modelCount = inparam::gInparamModel.get<int>("list_of_3D_models:[?]");
     
