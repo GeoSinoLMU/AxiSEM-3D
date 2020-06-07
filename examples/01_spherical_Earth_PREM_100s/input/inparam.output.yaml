@@ -101,4 +101,4 @@ list_of_station_groups:
             # what: buffer time steps for efficient IO
             # type: int
             # note: this parameter does not affect the final result
-            buffer_time_steps: 1000
+            buffer_time_steps: 1000000
