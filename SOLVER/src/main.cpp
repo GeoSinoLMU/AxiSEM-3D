@@ -95,8 +95,11 @@ int main(int argc, char *argv[]) {
         
         // measure cost
         timer::gPreloopTimer.begin("Cost measurement", '*');
+        bool measureNode = inparam::gInparamAdvanced.getWithLimits<bool>
+        ("mpi::weight_for_load_balancing", {
+            {"ELEMENT", false}, {"ELEMENT_NODE", true}});
         eigen::DColX costWeights =
-        sem->measureCost(*exodusMesh, *localMesh, *timeScheme);
+        sem->measureCost(*exodusMesh, *localMesh, *timeScheme, measureNode);
         timer::gPreloopTimer.ended("Cost measurement", '*');
         
         // free memory
