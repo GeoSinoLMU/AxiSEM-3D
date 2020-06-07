@@ -35,7 +35,7 @@ void WavefieldScanning::setup(double dt, double period, int numTotalSteps,
     double tolFourierH1 =
     gm.getWithBounds(rt + ":threshold_Fourier_convergence", 1e-3, 1e-1);
     double relTolH1 =
-    gm.getWithBounds(rt + ":advanced:relative_amplitude_skipped", 1e-3, 1e-1);
+    gm.getWithBounds(rt + ":relative_amplitude_skipped", 1e-3, 1.);
     double absTolH1 =
     gm.getWithBounds(rt + ":advanced:absolute_amplitude_skipped", 1e-14, 1e-10);
     ws->mTolFourierH2 = tolFourierH1 * tolFourierH1;
