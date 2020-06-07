@@ -60,7 +60,7 @@ void LocalMesh::decomposeExodusMesh(const ExodusMesh &exodusMesh,
     // metis
     double obj = metis::decompose(exodusMesh.getConnectivity(),
                                   weights, mpi::nprocWorld(),
-                                  mpi::rank(), elemRank);
+                                  mpi::rankWorld(), elemRank);
     // choose highest quality
     std::vector<double> objAll;
     mpi::gather(obj, objAll, MPI_ALL);
