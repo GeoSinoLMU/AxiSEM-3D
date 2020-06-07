@@ -84,36 +84,36 @@ namespace geodesy {
         get<std::string>("geodesy:lat_lon_north_pole_mesh");
         if (geographicZ == "SOURCE") {
             // read from inparam.source.yaml
+            const std::string &sourceName = inparam::gInparamSource.
+            get<std::string>("list_of_sources:{0}");
+            const std::string &rootl = ("list_of_sources:[0]:" + sourceName +
+                                        ":location");
             try {
-                const std::string &name = inparam::gInparamSource.
-                get<std::string>("list_of_sources:{0}");
-                const std::string &key = ("list_of_sources:[0]:" +
-                                          name + ":location");
                 internal::iLatLonRadiusAxisZ(0) = inparam::gInparamSource.
-                getWithBounds(key + ":latitude_longitude:[0]", -90., 90.);
+                getWithBounds(rootl + ":latitude_longitude:[0]", -90., 90.);
                 internal::iLatLonRadiusAxisZ(1) = inparam::gInparamSource.
-                getWithBounds(key + ":latitude_longitude:[1]", -180., 180.);
-                if (inparam::gInparamSource.contains(key + ":depth")) {
-                    double depth = inparam::gInparamSource.
-                    getWithBounds(key + ":depth", 0., getOuterRadius());
-                    if (inparam::gInparamSource.
-                        get<bool>(key + ":depth_below_solid_surface")) {
-                        internal::iLatLonRadiusAxisZ(2) =
-                        getOuterSolidRadius() - depth;
-                    } else {
-                        internal::iLatLonRadiusAxisZ(2) =
-                        getOuterRadius() - depth;
-                    }
-                } else  {
-                    internal::iLatLonRadiusAxisZ(2) = inparam::gInparamSource.
-                    getWithBounds(key + ":radius", 0., getOuterRadius());
-                }
+                getWithBounds(rootl + ":latitude_longitude:[1]", -180., 180.);
             } catch (...) {
                 throw std::runtime_error
                 ("geodesy::setup || "
                  "Error determining the geographic location of the first || "
                  "source in list_of_sources in inparam.source.yaml; || "
                  "location:latitude_longitude must be presented.");
+            }
+            if (inparam::gInparamSource.contains(rootl + ":depth")) {
+                double depth = inparam::gInparamSource.
+                getWithBounds(rootl + ":depth", 0., getOuterRadius());
+                if (inparam::gInparamSource.getWithDefault
+                    (rootl + ":depth_below_solid_surface", true)) {
+                    internal::iLatLonRadiusAxisZ(2) =
+                    getOuterSolidRadius() - depth;
+                } else {
+                    internal::iLatLonRadiusAxisZ(2) =
+                    getOuterRadius() - depth;
+                }
+            } else  {
+                internal::iLatLonRadiusAxisZ(2) = inparam::gInparamSource.
+                getWithBounds(rootl + ":radius", 0., getOuterRadius());
             }
         } else {
             // read numbers
