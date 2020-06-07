@@ -60,20 +60,20 @@ absorbing_boundary:
     # what: enable the Clayton-Enquist approach
     # type: bool
     # note: the simplest linear approach by Clayton and Engquist (1977)
-    enable_Clayton_Enquist: useless
+    enable_Clayton_Enquist: false
     
     # the sponge approach by Kosloff and Kosloff (1986)
     Kosloff_Kosloff:
         # what: enable the Kosloff-Kosloff approach
         # type: bool
         # note: Clayton-Enquist and Kosloff-Kosloff can be used together
-        enable: useless
+        enable: false
         
         # what: relative spans of the sponge layers
         # type: array of double
         # note: 1) given in the same order as absorbing_boundaries
         #       2) absolute span = relative span * mesh span
-        relative_spans: useless
+        relative_spans: []
         
         # what: U0's of the sponge layers
         # type: array of double
@@ -81,7 +81,7 @@ absorbing_boundary:
         #       2) U0 is the attenuation strength at the outermost
         #          part of a sponge layer (on the model boundary);
         #          the strength at the innermost part is 0
-        U0: useless
+        U0: []
 
 
 ######################## attenuation ########################
