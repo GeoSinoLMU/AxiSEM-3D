@@ -127,3 +127,49 @@ list_of_sources:
             #       3) FIRST_DERIVATIVE: first derivative of Gaussian
             #       4) RICKER: second derivative of Gaussian
             use_derivative_integral: ERF
+
+            ############### parameters for StreamSTF ###############
+            # what: ascii data file
+            # type: filename
+            # note: 1) this file must contain two columns, the first
+            #          for times and the second for values, and at least
+            #          two rows (two time points)
+            #       3) empty lines and comment lines (led by #) are allowed
+            ascii_data_file: stf.txt
+            # what: padding values when time is out of range
+            # type: string / array of double
+            # only: NONE / FIRST_LAST / [left, right]
+            # note: 1) NONE: throw an error when time is out of range
+            #       2) FIRST_LAST: use the first and the last time points
+            #       3) [left, right]: specified padding values
+            padding: FIRST_LAST
+
+            ############### parameters for NetCDF_STF ###############
+            # what: netcdf data file
+            # type: filename
+            nc_data_file: stf_file.nc
+            # what: netcdf variable for times
+            # type: string
+            # note: must be double precision with shape (X,), X>=2
+            nc_var_times: stf_times
+            # what: netcdf variable for data
+            # type: string
+            # note: 1) must have the same shape as nc_var_times
+            #       2) datatype must match solver precision
+            #          (refer to USE_DOUBLE in CMakeLists.txt)
+            nc_var_data: stf_data
+            # what: padding values when time is out of range
+            # type: string / array of double
+            # only: NONE / FIRST_LAST / [left, right]
+            # note: 1) NONE: throw an error when time is out of range
+            #       2) FIRST_LAST: use the first and the last time points
+            #       3) [left, right]: specified padding values
+            padding: FIRST_LAST
+            # what: chunk size (how many time steps per chunk)
+            # type: NONE / int
+            # note: 1) NetCDF_STF loads data by chunks during the time loop;
+            #          increase this chunk size to save reading time and
+            #          decrease it to save memroy (useful for a large number
+            #          of sources); must be greater than 2.
+            #       2) use NONE to disable buffer (chunk size = file size)
+            chunk_size: NONE
