@@ -43,20 +43,25 @@ void InparamYAML::parse(const std::string &fname) {
         // split
         const std::string &str = line.substr(front + 1, back - front - 1);
         const std::vector<std::string> &vec = bstring::split(str, ",");
-        // write header in this line
-        std::string converted = line.substr(0, front) + "\n";
-        // write elements with -
-        for (const std::string &elem: vec) {
-            if (elem.find(":") != std::string::npos) {
-                throw std::runtime_error("InparamYAML::parse || "
-                                         "Array given in [] must contain "
-                                         "non-object elements. || "
-                                         "Input yaml file: || " + fname);
+        if (vec.front() == "") {
+            // empty sequence
+            line = line.substr(0, front) + "YAML_EMPTY_SEQUENCE";
+        } else {
+            // write header in this line
+            std::string converted = line.substr(0, front) + "\n";
+            // write elements with -
+            for (const std::string &elem: vec) {
+                if (elem.find(":") != std::string::npos) {
+                    throw std::runtime_error("InparamYAML::parse || "
+                                             "Array given in [] must contain "
+                                             "non-object elements. || "
+                                             "Input yaml file: || " + fname);
+                }
+                // use location of '[' as indent
+                converted += bstring::filled(front) + "- " + elem + "\n";
             }
-            // use location of '[' as indent
-            converted += bstring::filled(front) + "- " + elem + "\n";
+            line = converted;
         }
-        line = converted;
     }
     
     // merge lines

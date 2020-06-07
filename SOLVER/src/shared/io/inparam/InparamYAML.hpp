@@ -20,6 +20,8 @@
 
 #include "bstring.hpp"
 
+#include <iostream>
+
 class InparamYAML {
 public:
     // constructor
@@ -51,7 +53,8 @@ public:
                 keyword[depth].front() == '{') {
                 ////////////////////// array //////////////////////
                 // check sequence type
-                if (!nodePtr->IsSequence()) {
+                if (!nodePtr->IsSequence() &&
+                    nodePtr->As<std::string>() != "YAML_EMPTY_SEQUENCE") {
                     throw std::runtime_error("InparamYAML::get || "
                                              "Non-array parent node. || "
                                              "Keyword: " + errKey + " || "
@@ -80,6 +83,10 @@ public:
                                                  "Keyword: " + errKey + " || "
                                                  "In YAML: " + mName);
                     }
+                    // first check empty
+                    if (nodePtr->As<std::string>() == "YAML_EMPTY_SEQUENCE") {
+                        return bstring::cast<T>("0", "InparamYAML::get");
+                    }
                     return bstring::cast<T>(bstring::toString(nodePtr->Size()),
                                             "InparamYAML::get");
                 }
@@ -104,6 +111,14 @@ public:
                 } catch(...) {
                     throw std::runtime_error("InparamYAML::get || "
                                              "Error parsing array index. || "
+                                             "Keyword: " + errKey + " || "
+                                             "In YAML: " + mName);
+                }
+                
+                // first check empty
+                if (nodePtr->As<std::string>() == "YAML_EMPTY_SEQUENCE") {
+                    throw std::runtime_error("InparamYAML::get || "
+                                             "Index out of range. || "
                                              "Keyword: " + errKey + " || "
                                              "In YAML: " + mName);
                 }
@@ -136,7 +151,8 @@ public:
             } else {
                 ////////////////////// object //////////////////////
                 // check and get object member
-                if (nodePtr->IsMap()) {
+                if (nodePtr->IsMap() &&
+                    nodePtr->As<std::string>() != "YAML_EMPTY_SEQUENCE") {
                     // access object member by iter because
                     // mini-yaml does not provide const random access
                     auto it = nodePtr->Begin();
