@@ -67,7 +67,7 @@ absorbing_boundary:
         # what: enable the Kosloff-Kosloff approach
         # type: bool
         # note: Clayton-Enquist and Kosloff-Kosloff can be used together
-        enable: false
+        enable: true
         
         # what: relative spans of the sponge layers
         # type: array of double
