@@ -338,7 +338,7 @@ measureCost(const ExodusMesh &exodusMesh, const LocalMesh &localMesh,
             ofs << it->first << " " << it->second << "\n";
         }
         if (!measureNode) {
-            ofs << "Point costs are not accounted in domain partitioning.\n";
+            ofs << "* Point costs are not accounted in domain partitioning.\n";
         }
         timer::gPreloopTimer.message("Cost libraries written to " + fname);
     }
