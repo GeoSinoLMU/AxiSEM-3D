@@ -1,0 +1,1 @@
+python -m salvus_mesh_lite.interface AxiSEM --basic.model prem_ani --basic.period 100
