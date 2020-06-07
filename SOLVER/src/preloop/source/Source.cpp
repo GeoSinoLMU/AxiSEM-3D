@@ -389,6 +389,10 @@ void Source::release(const SE_Model &sem, Domain &domain, double dt,
     }
     // minimum t0 over ranks
     minT0 = mpi::min(minT0);
+    if (sourceCount == 0) {
+        // no source, use 0.
+        minT0 = 0.;
+    }
     timer::gPreloopTimer.ended("Computing source patterns and releasing");
     
     // verbose
@@ -414,6 +418,9 @@ void Source::release(const SE_Model &sem, Domain &domain, double dt,
         ss << bstring::boxTitle("Source");
         for (int sindex = 0; sindex < sourceCount; sindex++) {
             ss << flat.at(sindex);
+        }
+        if (sourceCount == 0) {
+            ss << "* No sources in this simulation.\n";
         }
         ss << bstring::boxBaseline() << "\n\n";
     }
