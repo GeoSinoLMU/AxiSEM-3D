@@ -100,5 +100,5 @@ attenuation: CG4
 # what: list of 3D models
 # type: array of objects
 # note: 1) the order in this list can affect the final 3D model
-#       2) use NONE if no 3D model presents
+#       2) use NONE or [] if no 3D model presents
 list_of_3D_models: NONE
