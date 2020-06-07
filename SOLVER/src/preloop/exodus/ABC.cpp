@@ -22,10 +22,6 @@ std::unique_ptr<ABC> ABC::buildInparam(const ExodusMesh &exodusMesh) {
     std::unique_ptr<ABC> abc = std::make_unique<ABC>();
     
     // keys
-    const std::string &keyStr = gm.get<std::string>(root + ":boundaries");
-    if (keyStr == "NONE") {
-        return abc;
-    }
     abc->mUserKeys = gm.getVector<std::string>(root + ":boundaries");
     if (abc->mUserKeys.size() == 0) {
         return abc;
