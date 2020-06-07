@@ -47,15 +47,15 @@ geodesy:
 absorbing_boundary:
     # what: model boundaries regarded as absorbing boundaries
     # type: array of string
-    # only: NONE or a subset of [RIGHT, BOTTOM, TOP]
+    # only: a subset of [RIGHT, BOTTOM, TOP]
     # note: 1) an AxiSEM3D mesh may contain four outer boundaries:
     #          left (axial), right, bottom and top (surface); the right,
     #          bottom and top ones can be absorbing boundaries (the left
     #          or axial one is non-physical)
-    #       2) use NONE or [] to disable absorbing boundary condition
+    #       2) use [] to disable absorbing boundary condition
     #          (so that all model boundaries will be stress-free)
     #       3) the most common case in seismology is [RIGHT, BOTTOM]
-    boundaries: NONE
+    boundaries: []
     
     # what: enable the Clayton-Enquist approach
     # type: bool
@@ -73,7 +73,7 @@ absorbing_boundary:
         # type: array of double
         # note: 1) given in the same order as absorbing_boundaries
         #       2) absolute span = relative span * mesh span
-        relative_spans: [.05]
+        relative_spans: []
         
         # what: U0's of the sponge layers
         # type: array of double
@@ -81,7 +81,7 @@ absorbing_boundary:
         #       2) U0 is the attenuation strength at the outermost
         #          part of a sponge layer (on the model boundary);
         #          the strength at the innermost part is 0
-        U0: [.1]
+        U0: []
 
 
 ######################## attenuation ########################
@@ -100,5 +100,5 @@ attenuation: CG4
 # what: list of 3D models
 # type: array of objects
 # note: 1) the order in this list can affect the final 3D model
-#       2) use NONE or [] if no 3D model presents
-list_of_3D_models: NONE
+#       2) use [] if no 3D model presents
+list_of_3D_models: []
