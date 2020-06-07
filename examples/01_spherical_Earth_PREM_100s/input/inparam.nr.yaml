@@ -137,7 +137,7 @@ wavefield_scanning:
     # what: enable/disable wavefield scanning
     # type: bool
     # note: enabling wavefield scanning barely slows a simulation but
-    #       may significantly increase memory usage
+    #       will increase memory usage
     enable_scanning: false
 
     # what: output file
@@ -146,18 +146,20 @@ wavefield_scanning:
 
     # what: relative threshold for the convergence of Fourier series
     # type: double
-    # note: 1) allowed range: [1e-3, 1e-1]
-    #       2) this parameter can be understood as the accuracy loss of
-    #          the subsequent simulations compared to the scanning one
+    # note: 1) this parameter determines the accuracy loss by truncating
+    #          the Fourier series of wavefield
+    #       2) allowed range: [1e-3, 1e-1]
     threshold_Fourier_convergence: 1e-2
+    
+    # what: relative threshold for small amplitudes skipped for scanning
+    # type: double
+    # note: 1) this parameter determines the accuracy loss by ignoring
+    #          the energy peaks with small amplitudes
+    # note: 2) recommended range: [0.01, 1.0]
+    relative_amplitude_skipped: 0.1
 
     # advanced scanning parameters users are unlikely to change
     advanced:
-        # what: relative threshold for small amplitudes skipped for scanning
-        # type: double
-        # note: recommended range: [1e-3, 1e-1]
-        relative_amplitude_skipped: 1e-2
-
         # what: absolute threshold for small amplitudes skipped for scanning
         # type: double
         # note: recommended range: [1e-14, 1e-10]
