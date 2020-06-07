@@ -124,7 +124,7 @@ namespace metis {
         
         // trival
         idx_t npart_idx_t = (idx_t)npart;
-        real_t ubvec = (real_t)1.01;
+        real_t ubvec = (real_t)1.001;
         
         // metis options
         idx_t metisOps[METIS_NOPTIONS];
