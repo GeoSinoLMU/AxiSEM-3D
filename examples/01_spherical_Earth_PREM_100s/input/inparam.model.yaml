@@ -1,0 +1,104 @@
+#
+#  inparam.model.yaml
+#  AxiSEM3D
+#
+#  Created by Kuangdai Leng on 8/31/19.
+#  Copyright © 2019 Kuangdai Leng. All rights reserved.
+#
+
+#  This is an AxiSEM3D input parameter file for
+#  1D and 3D models
+
+
+############################# 1D model #############################
+model1D:
+    # what: Exodus mesh file created by salvus mesher
+    # type: filename
+    exodus_mesh: AxiSEM_prem_ani_100.e
+
+
+############################# geodesy #############################
+geodesy:
+    # what: geographic location of the north pole in the mesh
+    # type: array of double / SOURCE
+    # note: 1) this reference location enables the usage of geographic
+    #          coordinates for locating sources, receivers and 3D models,
+    #          compatible with Cartesian models
+    #       2) array of double: [latitude, longitude]
+    #       3) SOURCE: automatically determined by the FIRST source
+    #                  presented in list_of_sources in inparam.source.yaml;
+    #                  always use SOURCE for a single-source simulation
+    lat_lon_north_pole_mesh: SOURCE
+
+    # what: flattening on the surface
+    # type: string / double
+    # only: SPHERE / WGS84 / GRS80 / SPECFEM3D_GLOBE / value
+    # note: 1) ellipticity is ignored for Cartesian models
+    #       2) 0 for a perfect sphere; ~0.0033 for the Earth
+    #       3) ellipticity will be used in the transformation between
+    #          the geographic and the geocentric co-latitudes;
+    #          see eq. (14.32) in Dahlen & Tromp, 1998
+    #       4) to actually deform the entire mesh, add the model
+    #          "ellipticity" to list_of_3D_models
+    flattening_on_surface: WGS84
+
+
+######################## absorbing boundary ########################
+absorbing_boundary:
+    # what: model boundaries regarded as absorbing boundaries
+    # type: array of string
+    # only: NONE or a subset of [RIGHT, BOTTOM, TOP]
+    # note: 1) an AxiSEM3D mesh may contain four outer boundaries:
+    #          left (axial), right, bottom and top (surface); the right,
+    #          bottom and top ones can be absorbing boundaries (the left
+    #          or axial one is non-physical)
+    #       2) use NONE or [] to disable absorbing boundary condition
+    #          (so that all model boundaries will be stress-free)
+    #       3) the most common case in seismology is [RIGHT, BOTTOM]
+    boundaries: NONE
+    
+    # what: enable the Clayton-Enquist approach
+    # type: bool
+    # note: the simplest linear approach by Clayton and Engquist (1977)
+    enable_Clayton_Enquist: useless
+    
+    # the sponge approach by Kosloff and Kosloff (1986)
+    Kosloff_Kosloff:
+        # what: enable the Kosloff-Kosloff approach
+        # type: bool
+        # note: Clayton-Enquist and Kosloff-Kosloff can be used together
+        enable: useless
+        
+        # what: relative spans of the sponge layers
+        # type: array of double
+        # note: 1) given in the same order as absorbing_boundaries
+        #       2) absolute span = relative span * mesh span
+        relative_spans: useless
+        
+        # what: U0's of the sponge layers
+        # type: array of double
+        # note: 1) given in the same order as absorbing_boundaries
+        #       2) U0 is the attenuation strength at the outermost
+        #          part of a sponge layer (on the model boundary);
+        #          the strength at the innermost part is 0
+        U0: useless
+
+
+######################## attenuation ########################
+# what: attenuation mode
+# type: string
+# only: NONE / FULL / CG4
+# note: 1) NONE: turn off attenuation
+#       2) FULL: compute attenuation on all GLL points
+#       3) CG4:  compute attenuation on 4 GLL points per element;
+#                CG4 is as accurate as FULL and much more efficient
+#                than FULL, but requires set(NPOL 4) in CMakeLists.txt
+attenuation: CG4
+
+
+############################# 3D models #############################
+# what: list of 3D models
+# type: array of objects
+# note: 1) the order in this list can affect the final 3D model
+#       2) use NONE if no 3D model presents
+list_of_3D_models: NONE
