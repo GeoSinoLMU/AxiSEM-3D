@@ -113,7 +113,7 @@ std::string ABC::verbose() const {
     
     // user keys
     if (mUserKeys.size() == 0) {
-        ss << "Absorbing boundary has been disabled.\n";
+        ss << "* Absorbing boundary has been disabled.\n";
         ss << boxBaseline() << "\n\n";
         return ss.str();
     }
@@ -121,7 +121,7 @@ std::string ABC::verbose() const {
     
     // mesh keys
     if (mBoundaryKeys.size() == 0) {
-        ss << "The mesh contains none of these boundaries.\n";
+        ss << "* The mesh contains none of these boundaries.\n";
         ss << boxBaseline() << "\n\n";
         return ss.str();
     }
