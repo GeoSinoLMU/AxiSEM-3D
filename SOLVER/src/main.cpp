@@ -10,7 +10,12 @@
 
 #include "main.hpp"
 
+extern "C" void fenv_setup();
+
 int main(int argc, char *argv[]) {
+    // setup floating-point environment
+    fenv_setup();
+    
     // initialize MPI
     mpi::initialize(&argc, &argv);
     
