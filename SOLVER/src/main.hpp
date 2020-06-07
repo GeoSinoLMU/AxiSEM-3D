@@ -96,6 +96,11 @@ void releaseToDomain(SE_Model &sem, const ABC &abc, LocalMesh &localMesh,
 // initalize FFT
 void initalizeFFT(const std::string &stageKey);
 
+// measure cost
+eigen::DColX
+measureCost(const SE_Model &sem, const ExodusMesh &exodusMesh,
+            const LocalMesh &localMesh, const TimeScheme &timeScheme);
+
 // release sources
 void releaseSources(SE_Model &sem, Domain &domain, double dt,
                     TimeScheme &timeScheme);

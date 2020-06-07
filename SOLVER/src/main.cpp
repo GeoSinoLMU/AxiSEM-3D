@@ -95,11 +95,8 @@ int main(int argc, char *argv[]) {
         
         // measure cost
         timer::gPreloopTimer.begin("Cost measurement", '*');
-        bool measureNode = inparam::gInparamAdvanced.getWithLimits<bool>
-        ("mpi::weight_for_load_balancing", {
-            {"ELEMENT", false}, {"ELEMENT_NODE", true}});
         eigen::DColX costWeights =
-        sem->measureCost(*exodusMesh, *localMesh, *timeScheme, measureNode);
+        measureCost(*sem, *exodusMesh, *localMesh, *timeScheme);
         timer::gPreloopTimer.ended("Cost measurement", '*');
         
         // free memory
@@ -542,6 +539,16 @@ void initalizeFFT(const std::string &stageKey) {
     if (io::gVerbose == io::VerboseLevel::Detailed) {
         io::cout << fft::verbose(stageKey);
     }
+}
+
+// measure cost
+eigen::DColX
+measureCost(const SE_Model &sem, const ExodusMesh &exodusMesh,
+            const LocalMesh &localMesh, const TimeScheme &timeScheme) {
+    bool measureNode = inparam::gInparamAdvanced.getWithLimits<bool>
+    ("mpi::weight_for_load_balancing", {
+        {"ELEMENT", false}, {"ELEMENT_NODE", true}});
+    return sem.measureCost(exodusMesh, localMesh, timeScheme, measureNode);
 }
 
 // release sources
