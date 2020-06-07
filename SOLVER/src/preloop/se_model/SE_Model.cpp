@@ -240,9 +240,9 @@ void SE_Model::release(const ABC &abc, const LocalMesh &localMesh,
 }
 
 // step 4: measure
-eigen::DColX SE_Model::measureCost(const ExodusMesh &exodusMesh,
-                                   const LocalMesh &localMesh,
-                                   const TimeScheme &timeScheme) const {
+eigen::DColX SE_Model::
+measureCost(const ExodusMesh &exodusMesh, const LocalMesh &localMesh,
+            const TimeScheme &timeScheme, bool measureNode) const {
     // minimum time for measurement
     const double minTime = 1e4 * SimpleTimer::getClockResolution();
     // minimum count for measurement
@@ -348,10 +348,12 @@ eigen::DColX SE_Model::measureCost(const ExodusMesh &exodusMesh,
         // element
         weightsLocal(iquad) = elemCostLibrary.at(elemSignature[iquad]);
         // nodes
-        for (int ipnt = 0; ipnt < spectral::nPEM; ipnt++) {
-            int igll = localMesh.mElementGLL(iquad, ipnt);
-            weightsLocal(iquad) += (nodeCostLibrary.at(nodeSignature[igll]) /
-                                    mGLLPoints[igll].getElementCount());
+        if (measureNode) {
+            for (int ipnt = 0; ipnt < spectral::nPEM; ipnt++) {
+                int igll = localMesh.mElementGLL(iquad, ipnt);
+                weightsLocal(iquad) += (nodeCostLibrary.at(nodeSignature[igll])
+                                        / mGLLPoints[igll].getElementCount());
+            }
         }
     }
     timer::gPreloopTimer.ended("Computing weights from libraries");

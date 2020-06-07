@@ -52,9 +52,9 @@ public:
                  const TimeScheme &timeScheme, Domain &domain);
     
     // step 4: measure
-    eigen::DColX measureCost(const ExodusMesh &exodusMesh,
-                             const LocalMesh &localMesh,
-                             const TimeScheme &timeScheme) const;
+    eigen::DColX
+    measureCost(const ExodusMesh &exodusMesh, const LocalMesh &localMesh,
+                const TimeScheme &timeScheme, bool measureNode) const;
     
     // verbose
     std::string verbose(const std::string &titleSEM) const;
