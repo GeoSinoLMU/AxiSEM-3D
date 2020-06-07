@@ -23,7 +23,7 @@ time_axis:
     # note: use NONE to automatically determine Δt by mesh
     enforced_dt: NONE
 
-    # what: Courant number for determining Δt by mesh
+    # what: the Courant number for determining Δt by mesh
     # type: double
     # note: Δt increases with this number
     Courant_number: 0.6
@@ -40,6 +40,10 @@ time_axis:
 ######################### sources #########################
 # what: list of sources
 # type: array of objects
+# note: 1) if geodesy::lat_lon_north_pole_mesh = SOURCE in inparam.model.yaml,
+#          the horizontal location of the first source in this list must be
+#          specified by latitude_longitude (instead of distance_azimuth)
+#       2) use [] if no source presents
 list_of_sources:
     ##########################################
     # this key can be arbitrary
@@ -50,16 +54,25 @@ list_of_sources:
             # type: string / array of double
             # only: ON_AXIS / values
             # note: 1) the key can be "latitude_longitude" or "distance_azimuth"
-            #       2) if key is "latitude_longitude", the unit is degree;
-            #          if key is "distance_azimuth", the unit of distance is
-            #          radian for a spherical mesh and meter for a Cartesian
-            #          mesh, and the unit of azimuth is radian
+            #       2) the unit for "latitude_longitude" is degree;
+            #          the unit for "distance" is either radian (for a
+            #          spherical mesh) or meter (for a Cartesian mesh);
+            #          the unit for "azimuth" is radian
             #       3) use ON_AXIS to place the source on the mesh axis
             latitude_longitude: [37.91, -77.93]
             # what: vertical location
             # type: double
             # note: the key can be "depth" or "radius" and the unit is meter
             depth: 12e3
+            # what: use solid surface as depth origin
+            # type: bool
+            # note: not used if the previous key is "radius"
+            depth_below_solid_surface: true
+            # what: use undulated (otherwise reference) geometry to
+            #       determine the vertical location
+            # type: bool
+            # note: compatible with both "depth" and "radius"
+            undulated_geometry: true
         # source mechanism
         mechanism:
             # what: type of source mechanism
@@ -71,7 +84,7 @@ list_of_sources:
             # note: 1) use [M11, M22, M33, M12, M13, M23] for MOMENT_TENSOR;
             #              [F1, F2, F3] for FORCE_VECTOR;
             #              [P] for FLUID_PRESSURE,
-            #          where 123 stands for RTZ (vertical, radial, transpose)
+            #          where 123 stands for ZRT (vertical, radial, transpose)
             #       2) if location is given by "latitude_longitude",
             #          the RT-axes are determined w.r.t. this source; e.g.,
             #          the moment tensor of an earthquake follows the same
@@ -97,7 +110,7 @@ list_of_sources:
             half_duraction: 100.
             # what: decay factor
             # type: double
-            # note: 1) it further controls the shape of the bell
+            # note: 1) this factor further controls the shape of the bell
             #       2) SPECFEM3D_GLOBE uses 1.628 and AxiSEM 3.5
             decay_factor: 1.628
             # what: time shift
