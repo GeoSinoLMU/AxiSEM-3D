@@ -13,8 +13,12 @@
 ############################# station-wise #############################
 # what: list of station groups
 # type: array of objects
-# note: allows users to group stations with different options such as
-#       sampling rate and channels
+# note: 1) different options such as channels and sampling rates can
+#          be applied to different station groups; for example, one may have
+#          a group of real-world seismic stations recording full displacement
+#          vector at a high sampling rate and another group of animation
+#          stations recording vertical displacement at a low sampling rate
+#       2) use [] if no station group presents
 list_of_station_groups:
     ##########################################
     # this key can be arbitrary but must be unique in this list
@@ -32,15 +36,24 @@ list_of_station_groups:
             # what: horizontal coordinates x1 and x2
             # type: string
             # only: LATITUDE_LONGITUDE / DISTANCE_AZIMUTH
-            # note: for LATITUDE_LONGITUDE, the unit is degree;
-            #       for DISTANCE_AZIMUTH, the unit of distance is radian
-            #       for a spherical mesh and meter for a Cartesian mesh,
-            #       and the unit of azimuth is radian
+            # note: the unit for "LATITUDE_LONGITUDE" is degree;
+            #       the unit for "DISTANCE" is either radian (for a
+            #       spherical mesh) or meter (for a Cartesian mesh);
+            #       the unit for "AZIMUTH" is radian
             horizontal_x1_x2: LATITUDE_LONGITUDE
             # what: vertical coordinate x3
             # type: string
             # only: RADIUS / DEPTH
             vertical_x3: DEPTH
+            # what: use solid surface as depth origin
+            # type: bool
+            # note: not to be used if vertical_x3 = RADIUS
+            depth_below_solid_surface: true
+            # what: use undulated (otherwise reference) geometry to
+            #       determine the vertical locations
+            # type: bool
+            # note: compatible with both "RADIUS" and "DEPTH"
+            undulated_geometry: true
         # fields for output
         fields:
             # what: coordinate system of output
@@ -50,10 +63,10 @@ list_of_station_groups:
             #       2) RTZ: (radial, transpose, vertical)
             #       3) ENZ: (east, north, vertical)
             output_CS: RTZ
-            # what: medium where stations locate
+            # what: type of medium
             # type: string
             # only: SOLID / FLUID
-            # note: all stations in a group must be located in either
+            # note: all stations in this group must be located in either
             #       the solid or the fluid domain
             medium: SOLID
             # what: list of channels
@@ -71,7 +84,7 @@ list_of_station_groups:
             #            S, S11, S12, S13, S21, S22, S23, S31, S32, S33,
             #            Sii (or S_I1), S_J2
             #          * curl:
-            #            R, R1, R2, R3, R_NORM (or |U|)
+            #            R, R1, R2, R3, R_NORM (or |R|)
             #      2) allowed channels for medium = FLUID
             #          * displacement:
             #            U, U1, U2, U3, U_NORM (or |U|)
@@ -86,17 +99,19 @@ list_of_station_groups:
             # what: output file format
             # type: string
             # only: ASCII_STATION / ASCII_CHANNEL / NETCDF
-            # note: 1) ASCII_STATION: one ascii file contains all channels on
+            # note: 1) ASCII_STATION: one ascii file contains all channels at
             #                         one station, available for a few stations
-            #       2) ASCII_CHANNEL: one ascii file contains all stations on
-            #                         one channel, available for many stations
-            #       3) NETCDF: most time and memory efficient; parallel NetCDF
+            #       2) ASCII_CHANNEL: one ascii file contains one channel at
+            #                         all stations, available for many stations
+            #       3) NETCDF: much more time and memory efficient than ascii,
+            #                  available for many stations; parallel NetCDF
             #                  can be activated in CMakeLists.txt
             format: ASCII_STATION
             # what: sampling period
             # type: string / double
             # only: DT / DTx2 / DTx3 / ... / value
-            # note: DT stands for Δt of the simulation
+            # note: DT stands for Δt of the simulation; DTx3 means
+            #       sampling period = Δt * 3
             sampling_period: DT
             # what: buffer time steps for efficient IO
             # type: int
