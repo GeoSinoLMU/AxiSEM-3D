@@ -332,7 +332,7 @@ measureCost(const ExodusMesh &exodusMesh, const LocalMesh &localMesh,
              it != elemCostLibrary.end(); ++it) {
             ofs << it->first << " " << it->second << "\n";
         }
-        ofs << "\nPoints:\n";
+        ofs << "\nPoints:" << (measureNode ? "" : " (not used)") << "\n";
         for (auto it = nodeCostLibrary.begin();
              it != nodeCostLibrary.end(); ++it) {
             ofs << it->first << " " << it->second << "\n";
