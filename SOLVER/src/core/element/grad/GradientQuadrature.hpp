@@ -389,6 +389,11 @@ public:
                                  m1overS, mDzDxii, mDzDeta);
     }
     
+    // get axial flag for cost signature
+    bool axial() const {
+        return mAxial;
+    }
+    
     
     ///////////////////////////////////////////////////////////////////////////
     ///////////////////////// template tool functions /////////////////////////

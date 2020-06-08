@@ -53,6 +53,9 @@ public:
     std::string costSignature() const {
         std::stringstream ss;
         ss << typeInfo() << "$" << mNr;
+        if (mGradQuad->axial()) {
+            ss << "$Axial";
+        }
         return ss.str();
     }
     
