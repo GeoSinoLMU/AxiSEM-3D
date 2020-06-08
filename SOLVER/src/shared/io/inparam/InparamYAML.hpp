@@ -20,8 +20,6 @@
 
 #include "bstring.hpp"
 
-#include <iostream>
-
 class InparamYAML {
 public:
     // constructor
