@@ -1,5 +1,5 @@
 //
-//  Stations.hpp
+//  StationOutput.hpp
 //  AxiSEM3D
 //
 //  Created by Kuangdai Leng on 5/25/20.
@@ -8,25 +8,25 @@
 
 //  stations: generator of StationGroup in core
 
-#ifndef Stations_hpp
-#define Stations_hpp
+#ifndef StationOutput_hpp
+#define StationOutput_hpp
 
 #include "channel.hpp"
 
 class SE_Model;
 class Domain;
 
-class Stations {
+class StationOutput {
     enum class Format {AsciiStation, AsciiChannel, NetCDF};
     
 public:
     // constructor
-    Stations(const std::string &groupName,
-             const std::string &fileName, bool sourceCentered,
-             bool useDepth, bool depthSolid, bool undulatedGeometry,
-             channel::WavefieldCS wcs, bool fluid,
-             const std::vector<std::string> &userChannels,
-             Format format, double samplingPeriod, int bufferTimeSteps):
+    StationOutput(const std::string &groupName,
+                  const std::string &fileName, bool sourceCentered,
+                  bool useDepth, bool depthSolid, bool undulatedGeometry,
+                  channel::WavefieldCS wcs, bool fluid,
+                  const std::vector<std::string> &userChannels,
+                  Format format, double samplingPeriod, int bufferTimeSteps):
     mGroupName(groupName),
     mFileName(fileName), mSourceCentered(sourceCentered),
     mUseDepth(useDepth), mDepthSolid(depthSolid),
@@ -39,7 +39,8 @@ public:
     
 private:
     // build from inparam
-    static std::shared_ptr<const Stations> buildInparam(int gindex, double dt);
+    static std::shared_ptr<const StationOutput>
+    buildInparam(int gindex, double dt);
     
     // verbose
     std::string verbose(double dt, int numRecordSteps, int numStations) const;
@@ -72,4 +73,4 @@ private:
     const int mBufferTimeSteps;
 };
 
-#endif /* Stations_hpp */
+#endif /* StationOutput_hpp */

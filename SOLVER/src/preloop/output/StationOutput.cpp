@@ -1,15 +1,15 @@
 
 //
-//  Stations.cpp
+//  StationOutput.cpp
 //  AxiSEM3D
 //
 //  Created by Kuangdai Leng on 5/25/20.
 //  Copyright © 2020 Kuangdai Leng. All rights reserved.
 //
 
-//  stations: generator of StationGroup in core
+//  station output: generator of StationGroup in core
 
-#include "Stations.hpp"
+#include "StationOutput.hpp"
 #include "SE_Model.hpp"
 #include "inparam.hpp"
 #include "mpi.hpp"
@@ -29,7 +29,8 @@
 using namespace bstring;
 
 // build from inparam
-std::shared_ptr<const Stations> Stations::buildInparam(int gindex, double dt) {
+std::shared_ptr<const StationOutput>
+StationOutput::buildInparam(int gindex, double dt) {
     // group name and key in inparam
     const InparamYAML &gm = inparam::gInparamOutput;
     std::string root = "list_of_station_groups";
@@ -72,23 +73,23 @@ std::shared_ptr<const Stations> Stations::buildInparam(int gindex, double dt) {
     if (strSP == "DT") {
         samplingPeriod = dt;
     } else if (strSP.substr(0, 3) == "DTx") {
-        int n = cast<int>(strSP.substr(3), "Stations::buildInparam");
+        int n = cast<int>(strSP.substr(3), "StationOutput::buildInparam");
         samplingPeriod = dt * n;
     } else {
-        samplingPeriod = cast<double>(strSP, "Stations::buildInparam");
+        samplingPeriod = cast<double>(strSP, "StationOutput::buildInparam");
     }
     // buffer size
     int bufferTimeSteps = gm.getWithBounds(rooto + ":buffer_time_steps", 1);
     // construct and return
     return std::make_shared
-    <const Stations>(groupName, fileName, sourceCentered,
-                     useDepth, depthSolid, undulated,
-                     wcs, fluid, userChannels,
-                     format, samplingPeriod, bufferTimeSteps);
+    <const StationOutput>(groupName, fileName, sourceCentered,
+                          useDepth, depthSolid, undulated,
+                          wcs, fluid, userChannels,
+                          format, samplingPeriod, bufferTimeSteps);
 }
 
 // verbose
-std::string Stations::
+std::string StationOutput::
 verbose(double dt, int numRecordSteps, int numStations) const {
     // title
     std::stringstream ss;
@@ -160,8 +161,8 @@ verbose(double dt, int numRecordSteps, int numStations) const {
 }
 
 // release stations to domain
-void Stations::release(const SE_Model &sem, Domain &domain, double dt,
-                       int nTotalSteps) {
+void StationOutput::release(const SE_Model &sem, Domain &domain, double dt,
+                            int nTotalSteps) {
     // group count
     int groupCount =
     inparam::gInparamOutput.get<int>("list_of_station_groups:[?]");
@@ -169,7 +170,7 @@ void Stations::release(const SE_Model &sem, Domain &domain, double dt,
     // verbose
     std::stringstream ss;
     if (io::gVerbose != io::VerboseLevel::None && mpi::root()) {
-        ss << boxTitle("Stations");
+        ss << boxTitle("Station groups");
     }
     
     // go over groups
@@ -179,10 +180,10 @@ void Stations::release(const SE_Model &sem, Domain &domain, double dt,
         
         //////////// inparam ////////////
         timer::gPreloopTimer.begin("Building station group from inparam");
-        std::shared_ptr<const Stations> stgrp = buildInparam(gindex, dt);
+        std::shared_ptr<const StationOutput> stgrp = buildInparam(gindex, dt);
         timer::gPreloopTimer.message("group name = " + stgrp->mGroupName);
         if (groupNames.find(stgrp->mGroupName) != groupNames.end()) {
-            throw std::runtime_error("Stations::release || "
+            throw std::runtime_error("StationOutput::release || "
                                      "Station group name must be unique. || "
                                      "Duplicated station group name: " +
                                      stgrp->mGroupName);
@@ -199,8 +200,8 @@ void Stations::release(const SE_Model &sem, Domain &domain, double dt,
         if (mpi::root()) {
             // use map to check key uniqueness while recording order in map
             std::map<std::string, std::pair<int, eigen::DRow3>> keyCrds;
-            const std::vector<std::string> &lines =
-            readLines(io::popInputDir(stgrp->mFileName), "Stations::release");
+            const std::vector<std::string> &lines = readLines
+            (io::popInputDir(stgrp->mFileName), "StationOutput::release");
             int numStations = 0;
             for (const std::string &line: lines) {
                 const std::vector<std::string> &words = split(line, " \t");
@@ -211,7 +212,7 @@ void Stations::release(const SE_Model &sem, Domain &domain, double dt,
                 // size check
                 if (words.size() != 5 && words.size() != 6) {
                     throw std:: runtime_error
-                    ("Stations::release || "
+                    ("StationOutput::release || "
                      "Input file for stations must contain five or six columns."
                      " || Ascii file: " + io::popInputDir(stgrp->mFileName) +
                      " || Station group name: " + stgrp->mGroupName);
@@ -220,15 +221,15 @@ void Stations::release(const SE_Model &sem, Domain &domain, double dt,
                 const std::string &stKey = words[1] + "." + words[0];
                 if (keyCrds.find(stKey) != keyCrds.end()) {
                     throw std::runtime_error
-                    ("Stations::release || Station key must be unique. || "
+                    ("StationOutput::release || Station key must be unique. || "
                      "Duplicated station key: " + stKey + " || "
                      "Station group name: " + stgrp->mGroupName);
                 }
                 // coords
                 static eigen::DRow3 crd;
-                crd(0) = cast<double>(words[2], "Stations::release");
-                crd(1) = cast<double>(words[3], "Stations::release");
-                crd(2) = cast<double>(words.back(), "Stations::release");
+                crd(0) = cast<double>(words[2], "StationOutput::release");
+                crd(1) = cast<double>(words[3], "StationOutput::release");
+                crd(2) = cast<double>(words.back(), "StationOutput::release");
                 keyCrds.insert({stKey, {numStations, crd}});
                 // increment number
                 numStations++;
@@ -281,9 +282,9 @@ void Stations::release(const SE_Model &sem, Domain &domain, double dt,
             for (int ist = 0; ist < numStations; ist++) {
                 if (stationRank.find(ist) == stationRank.end()) {
                     throw std::runtime_error
-                    ("Stations::release || Error locating station in mesh. || "
-                     "Station key: " + stKeys[ist] + " || "
-                     "Station group name: " + stgrp->mGroupName);
+                    ("StationOutput::release || Error locating station in mesh."
+                     " || Station key: " + stKeys[ist] +
+                     " || Station group name: " + stgrp->mGroupName);
                 }
             }
         }

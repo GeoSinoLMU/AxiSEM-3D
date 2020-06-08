@@ -150,10 +150,11 @@ int main(int argc, char *argv[]) {
         releaseSources(*sem, *domain, dt, *timeScheme);
         timer::gPreloopTimer.ended("Source", '*');
         
-        // stations
-        timer::gPreloopTimer.begin("Stations", '*');
-        Stations::release(*sem, *domain, dt, timeScheme->getNumTimeSteps());
-        timer::gPreloopTimer.ended("Stations", '*');
+        // station output
+        timer::gPreloopTimer.begin("Station groups", '*');
+        StationOutput::release(*sem, *domain, dt,
+                               timeScheme->getNumTimeSteps());
+        timer::gPreloopTimer.ended("Station groups", '*');
         
         // wavefield scanning
         timer::gPreloopTimer.begin("Wavefield scanning", '*');
