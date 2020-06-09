@@ -17,8 +17,9 @@
 
 // destructor
 WavefieldInjection::~WavefieldInjection() {
-    if (mReader) {
-        mReader->close();
+    if (mReaderSolid) {
+        mReaderSolid->close();
+        mReaderFluid->close();
     }
 }
 
@@ -177,7 +178,8 @@ initializeElements(std::vector<int> &interiorQuadTags,
 
 // initialize source-time functions
 void WavefieldInjection::
-initializeSTFs(const std::string &ncFileName,
+initializeSTFs(const std::string &ncFileNameSolid,
+               const std::string &ncFileNameFluid,
                bool aligned, int bufferSize) {
     if (mSTFsInitialized) {
         throw std::runtime_error("WavefieldInjection::initializeSTFs || "
@@ -192,21 +194,24 @@ initializeSTFs(const std::string &ncFileName,
     }
     
     // file
-    mReader = std::make_shared<NetCDF_Reader>();
+    mReaderSolid = std::make_shared<NetCDF_Reader>();
+    mReaderFluid = std::make_shared<NetCDF_Reader>();
 #ifdef _USE_PARALLEL_NETCDF
-    mReader->openParallel(ncFileName);
+    mReaderSolid->openParallel(ncFileNameSolid);
+    mReaderFluid->openParallel(ncFileNameFluid);
 #else
-    mReader->open(ncFileName);
+    mReaderSolid->open(ncFileNameSolid);
+    mReaderFluid->open(ncFileNameFluid);
 #endif
     
     // solid
     for (const auto &elem: mInteriorSolidElements) {
-        elem->setSTF(aligned, bufferSize, mReader);
+        elem->setSTF(aligned, bufferSize, mReaderSolid);
     }
     
     // fluid
     for (const auto &elem: mInteriorFluidElements) {
-        elem->setSTF(aligned, bufferSize, mReader);
+        elem->setSTF(aligned, bufferSize, mReaderFluid);
     }
     
     // initialized

@@ -35,7 +35,8 @@ public:
                             double distTol, const Domain &domain);
     
     // initialize source-time functions
-    void initializeSTFs(const std::string &ncFileName,
+    void initializeSTFs(const std::string &ncFileNameSolid,
+                        const std::string &ncFileNameFluid,
                         bool aligned, int bufferSize);
     
     // set in domain
@@ -64,7 +65,8 @@ private:
     std::vector<std::shared_ptr<FluidElementInteriorWJ>> mInteriorFluidElements;
     
     // file
-    std::shared_ptr<NetCDF_Reader> mReader = nullptr;
+    std::shared_ptr<NetCDF_Reader> mReaderSolid = nullptr;
+    std::shared_ptr<NetCDF_Reader> mReaderFluid = nullptr;
     
     // flags
     bool mElementsInitialized = false;
