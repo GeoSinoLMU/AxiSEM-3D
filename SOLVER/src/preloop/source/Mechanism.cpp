@@ -166,13 +166,20 @@ release(const eigen::DMat33 &Qzsp, bool sourceOnAxis,
             pattern.setZero();
         } else {
             for (int alpha = 0; alpha < nu_1; alpha++) {
+                // Voigt notation
+                // 0   5   4
+                //     1   3
+                //         2
+                // mss msp msz
+                // msp mpp mpz
+                // msz mpz mzz
                 numerical::ComplexD exp_iAlphaPhi = exp(1. * alpha * i_phi);
                 pattern.block(alpha, nPEM * 0, 1, nPEM) = exp_iAlphaPhi * mss;
                 pattern.block(alpha, nPEM * 1, 1, nPEM) = exp_iAlphaPhi * mpp;
                 pattern.block(alpha, nPEM * 2, 1, nPEM) = exp_iAlphaPhi * mzz;
-                pattern.block(alpha, nPEM * 3, 1, nPEM) = exp_iAlphaPhi * msp;
+                pattern.block(alpha, nPEM * 3, 1, nPEM) = exp_iAlphaPhi * mpz;
                 pattern.block(alpha, nPEM * 4, 1, nPEM) = exp_iAlphaPhi * msz;
-                pattern.block(alpha, nPEM * 5, 1, nPEM) = exp_iAlphaPhi * mpz;
+                pattern.block(alpha, nPEM * 5, 1, nPEM) = exp_iAlphaPhi * msp;
             }
         }
         // axial
@@ -193,17 +200,17 @@ release(const eigen::DMat33 &Qzsp, bool sourceOnAxis,
             if (nu_1 >= 2) {
                 pattern.block(1, nPEM * 4, 1, nPED) =
                 (msz.block(0, 0, 1, nPED) - i * mpz.block(0, 0, 1, nPED)) / 2.;
-                pattern.block(1, nPEM * 5, 1, nPED) =
+                pattern.block(1, nPEM * 3, 1, nPED) =
                 i * pattern.block(1, nPEM * 4, 1, nPED);
             }
             // quadrupole
             if (nu_1 >= 3) {
                 pattern.block(2, nPEM * 0, 1, nPED) =
                 (mss.block(0, 0, 1, nPED) - mpp.block(0, 0, 1, nPED)
-                 + 2. * i * msp.block(0, 0, 1, nPED)) / 4.;
+                 - 2. * i * msp.block(0, 0, 1, nPED)) / 4.;
                 pattern.block(2, nPEM * 1, 1, nPED) =
                 -pattern.block(2, nPEM * 0, 1, nPED);
-                pattern.block(2, nPEM * 3, 1, nPED) =
+                pattern.block(2, nPEM * 5, 1, nPED) =
                 i * pattern.block(2, nPEM * 0, 1, nPED);
             }
             // axial scaling
