@@ -700,10 +700,14 @@ void ExodusMesh::formNrAtNodes(const NrField &nrField,
             int upperNr = std::max((int)round(circ / aveGLLSpacing), 1);
             // for axial nodes, 0 is not enough
             if (crdMe(inode, 0) < getGlobalVariable("dist_tolerance")) {
-                // nu higher than 1 will be masked
-                // an axial moment tensor requires nu=2 (nr=5), but source
-                // is added at element level and handled by non-axial nodes
-                upperNr = 3;
+                // Q: Use 3 or 5 here? This is very tricky.
+                // A: An axial moment tensor requires nu=2 (nr=5), but source
+                //    is added at element level and handled by non-axial nodes;
+                //    therefore, 3 is enough for an axial GLL-point, as used in
+                //    the old code. However, here we implement nr on the nodes,
+                //    and thus 5 must be used on the axis so that the
+                //    "interpolated" nr on a non-axial GLL point can reach 5.
+                upperNr = 5;
             }
             nrMe(inode) = std::min(nrMe(inode), upperNr);
         }
