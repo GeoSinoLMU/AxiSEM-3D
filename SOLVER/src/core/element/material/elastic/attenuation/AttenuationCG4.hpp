@@ -189,11 +189,12 @@ private:
     /////////////////////////////////////////////////////////////////////
     
     /////////////////// stress -= mem ///////////////////
-    // CASE == _1D_FR
-    void subtractMemFromStress(eigen::vec_ar6_CMatPP_RM &stressN,
-                               int nx) const {
+    template <CaseFA CASE, class FMat6, class FCG6> static
+    typename std::enable_if<CASE == CaseFA::_1D_FR, void>::type
+    subtractMemFromStress(const std::vector<FCG6> &memVar, FMat6 &stressN,
+                          int nx) {
         for (int isls = 0; isls < nsls(); isls++) {
-            const eigen::vec_ar6_CMat22_RM &memVar4 = mMemVar_FR[isls];
+            const eigen::vec_ar6_CMat22_RM &memVar4 = memVar[isls];
             for (int idim = 0; idim < 6; idim++) {
                 stressN[nx][idim](1, 1) -= memVar4[nx][idim](0, 0);
                 stressN[nx][idim](1, 3) -= memVar4[nx][idim](0, 1);
@@ -203,7 +204,10 @@ private:
         }
     }
     // CASE != _1D_FR
-    void subtractMemFromStress(eigen::RMatXN6 &stressN, int nx) const {
+    template <CaseFA CASE, class FMat6, class FCG6> static
+    typename std::enable_if<CASE != CaseFA::_1D_FR, void>::type
+    subtractMemFromStress(const std::vector<FCG6> &memVar, FMat6 &stressN,
+                          int nx) {
         using spectral::nPEM;
         using spectral::nPED;
         
@@ -222,7 +226,7 @@ private:
         
         // subtract
         for (int isls = 0; isls < nsls(); isls++) {
-            const eigen::RMatX46 &memVar4 = mMemVar_CD[isls];
+            const eigen::RMatX46 &memVar4 = memVar[isls];
             stressN(seqRow, seqN0) -= memVar4(seqRow, seq40);
             stressN(seqRow, seqN1) -= memVar4(seqRow, seq41);
             stressN(seqRow, seqN2) -= memVar4(seqRow, seq42);
@@ -270,8 +274,8 @@ private:
     
     
     /////////////////// strain4 => dStress ///////////////////
-    template <CaseFA CASE, class FMat6> static void
-    strainToStressCG4(const FMat6 &strain4, FMat6 &dStress, int nx,
+    template <CaseFA CASE, class FCG6> static void
+    strainToStressCG4(const FCG6 &strain4, FCG6 &dStress, int nx,
                       const fa4::Property4 &dLambda,
                       const fa4::Property4 &dMu,
                       const fa4::Property4 &dMu2) {
@@ -292,13 +296,13 @@ private:
     /////////////////// apply ///////////////////
     // CASE == _1D_FR
     template <CaseFA CASE, class FMat6, class FCG6>
-    void apply(const FMat6 &strain, FMat6 &stress, int nx,
-               FCG6 &dStress, std::vector<FCG6> &memVar, FCG6 &strain4,
-               const fa4::Property4 &dLambda,
-               const fa4::Property4 &dMu,
-               const fa4::Property4 &dMu2) const {
+    static void apply(const FMat6 &strain, FMat6 &stress, int nx,
+                      FCG6 &dStress, std::vector<FCG6> &memVar, FCG6 &strain4,
+                      const fa4::Property4 &dLambda,
+                      const fa4::Property4 &dMu,
+                      const fa4::Property4 &dMu2) {
         // stress -= memory
-        subtractMemFromStress(stress, nx);
+        subtractMemFromStress<CASE>(memVar, stress, nx);
         
         // update memory variables, phase 1
         Attenuation::updateMemAlphaBeta<CASE>(dStress, memVar, nx);

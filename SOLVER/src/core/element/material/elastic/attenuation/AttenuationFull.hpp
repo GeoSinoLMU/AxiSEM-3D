@@ -151,17 +151,23 @@ private:
     
     /////////////////// stress -= mem ///////////////////
     // CASE == _1D_FR
-    void subtractMemFromStress(eigen::vec_ar6_CMatPP_RM &stress, int nx) const {
+    template <CaseFA CASE, class FMat6> static
+    typename std::enable_if<CASE == CaseFA::_1D_FR, void>::type
+    subtractMemFromStress(const std::vector<FMat6> &memVar, FMat6 &stress,
+                          int nx) {
         for (int isls = 0; isls < nsls(); isls++) {
             for (int idim = 0; idim < 6; idim++) {
-                stress[nx][idim] -= mMemVar_FR[isls][nx][idim];
+                stress[nx][idim] -= memVar[isls][nx][idim];
             }
         }
     }
     // CASE != _1D_FR
-    void subtractMemFromStress(eigen::RMatXN6 &stress, int nx) const {
+    template <CaseFA CASE, class FMat6> static
+    typename std::enable_if<CASE != CaseFA::_1D_FR, void>::type
+    subtractMemFromStress(const std::vector<FMat6> &memVar, FMat6 &stress,
+                          int nx) {
         for (int isls = 0; isls < nsls(); isls++) {
-            stress.topRows(nx) -= mMemVar_CD[isls];
+            stress.topRows(nx) -= memVar[isls];
         }
     }
     
@@ -169,13 +175,13 @@ private:
     /////////////////// apply ///////////////////
     // CASE == _1D_FR
     template <CaseFA CASE, class FMat6>
-    void apply(const FMat6 &strain, FMat6 &stress, int nx,
-               FMat6 &dStress, std::vector<FMat6> &memVar,
-               const faN::PropertyN &dLambda,
-               const faN::PropertyN &dMu,
-               const faN::PropertyN &dMu2) const {
+    static void apply(const FMat6 &strain, FMat6 &stress, int nx,
+                      FMat6 &dStress, std::vector<FMat6> &memVar,
+                      const faN::PropertyN &dLambda,
+                      const faN::PropertyN &dMu,
+                      const faN::PropertyN &dMu2) {
         // stress -= memory
-        subtractMemFromStress(stress, nx);
+        subtractMemFromStress<CASE>(memVar, stress, nx);
         
         // update memory variables, phase 1
         Attenuation::updateMemAlphaBeta<CASE>(dStress, memVar, nx);
