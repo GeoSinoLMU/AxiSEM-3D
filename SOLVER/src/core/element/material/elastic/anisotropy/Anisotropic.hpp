@@ -138,6 +138,7 @@ public:
     void strainToStress_FR(const eigen::vec_ar6_CMatPP_RM &strain,
                            eigen::vec_ar6_CMatPP_RM &stress,
                            int nu_1) const {
+        // elasticity
         for (int alpha = 0; alpha < nu_1; alpha++) {
             strainToStress<CaseFA::_1D_FR>
             (strain, stress, alpha,
@@ -148,12 +149,16 @@ public:
              mC55, mC56,
              mC66);
         }
+        
+        // attenuation
+        applyAttenuation(strain, stress, nu_1);
     }
     
     // strain => stress in cardinal space
     void strainToStress_CD(const eigen::RMatXN6 &strain,
                            eigen::RMatXN6 &stress,
                            int nr) const {
+        // elasticity
         if (m1D) {
             strainToStress<CaseFA::_1D_CD>
             (strain, stress, nr,
@@ -173,6 +178,9 @@ public:
              mC55, mC56,
              mC66);
         }
+        
+        // attenuation
+        applyAttenuation(strain, stress, nr);
     }
     
     
@@ -263,9 +271,6 @@ private:
                                  3, C46,
                                  4, C56,
                                  5, C66);
-        
-        // attenuation
-        applyAttenuation(strain, stress, nx);
     }
 };
 

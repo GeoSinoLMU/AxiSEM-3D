@@ -91,6 +91,7 @@ public:
     void strainToStress_FR(const eigen::vec_ar6_CMatPP_RM &strain,
                            eigen::vec_ar6_CMatPP_RM &stress,
                            int nu_1) const {
+        // elasticity
 #ifdef _SAVE_MEMORY
         computeMu2();
 #endif
@@ -98,12 +99,16 @@ public:
             strainToStress<CaseFA::_1D_FR>
             (strain, stress, alpha, mLambda, mMu, xMu2);
         }
+        
+        // attenuation
+        applyAttenuation(strain, stress, nu_1);
     }
     
     // strain => stress in cardinal space
     void strainToStress_CD(const eigen::RMatXN6 &strain,
                            eigen::RMatXN6 &stress,
                            int nr) const {
+        // elasticity
 #ifdef _SAVE_MEMORY
         computeMu2();
 #endif
@@ -114,6 +119,9 @@ public:
             strainToStress<CaseFA::_3D_CD>
             (strain, stress, nr, mLambda, mMu, xMu2);
         }
+        
+        // attenuation
+        applyAttenuation(strain, stress, nr);
     }
     
     
@@ -169,9 +177,6 @@ private:
                    const faN::PropertyN &mu2) const {
         // cijkl (so the above static function can used by atteunuation)
         strainToStressStatic<CASE>(strain, stress, nx, lambda, mu, mu2);
-        
-        // attenuation
-        applyAttenuation(strain, stress, nx);
     }
 };
 
