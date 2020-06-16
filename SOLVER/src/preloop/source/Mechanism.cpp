@@ -78,6 +78,8 @@ release(const eigen::DMat33 &Qzsp, bool sourceOnAxis,
             pattern.block(0, 0, nu_1, nPED).setZero();
             // monopole
             pattern.block(0, 0, 1, nPED) = p.block(0, 0, 1, nPED);
+            // axial scaling
+            pattern /= (2. * numerical::dPi);
         }
         // element source
         src = std::make_unique<const FluidPressure>
@@ -120,6 +122,8 @@ release(const eigen::DMat33 &Qzsp, bool sourceOnAxis,
                 pattern.block(1, nPEM * 1, 1, nPED) =
                 i * pattern.block(1, nPEM * 0, 1, nPED);
             }
+            // axial scaling
+            pattern /= (2. * numerical::dPi);
         }
         // element source
         src = std::make_unique<const SolidForce>
@@ -202,6 +206,8 @@ release(const eigen::DMat33 &Qzsp, bool sourceOnAxis,
                 pattern.block(2, nPEM * 3, 1, nPED) =
                 i * pattern.block(2, nPEM * 0, 1, nPED);
             }
+            // axial scaling
+            pattern /= (2. * numerical::dPi);
         }
         // element source
         src = std::make_unique<const SolidMoment>
