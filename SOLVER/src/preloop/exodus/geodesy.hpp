@@ -188,8 +188,7 @@ namespace geodesy {
     Mat llr2tpr(const Mat &llr, bool ellipticity) {
         Mat tpr = Mat(llr.rows(), llr.cols());
         // latitude
-        tpr.col(0) = ((T)(numerical::dPi / 2.) -
-                      llr.col(0).array() * (T)numerical::dDegree);
+        tpr.col(0) = llr.col(0) * (T)numerical::dDegree;
         if (ellipticity) {
             // ellipticity correction
             typedef Eigen::Matrix<T, Eigen::Dynamic, 1> TColX;
@@ -197,6 +196,7 @@ namespace geodesy {
             const TColX &f1sq = (f.array() - (T)1.).square();
             tpr.col(0) = (tpr.col(0).array().tan() * f1sq.array()).atan();
         }
+        tpr.col(0) = (T)(numerical::dPi / 2.) - tpr.col(0).array();
         // longitude
         tpr.col(1) = llr.col(1) * (T)(numerical::dDegree);
         // radius
