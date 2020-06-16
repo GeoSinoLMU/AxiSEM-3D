@@ -153,9 +153,9 @@ release(const eigen::DMat33 &Qzsp, bool sourceOnAxis,
         const eigen::DRowN &mss = m(1, 1) * inplaneFactor;
         const eigen::DRowN &mpp = m(2, 2) * inplaneFactor;
         const eigen::DRowN &mzz = m(0, 0) * inplaneFactor;
-        const eigen::DRowN &msp = m(1, 2) * inplaneFactor;
-        const eigen::DRowN &msz = m(0, 1) * inplaneFactor;
         const eigen::DRowN &mpz = m(0, 2) * inplaneFactor;
+        const eigen::DRowN &msz = m(0, 1) * inplaneFactor;
+        const eigen::DRowN &msp = m(1, 2) * inplaneFactor;
         // allocate
         if (sourceOnAxis) {
             nu_1 = std::min(nu_1, 3);
