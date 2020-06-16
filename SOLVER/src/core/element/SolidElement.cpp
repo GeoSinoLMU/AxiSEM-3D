@@ -252,7 +252,8 @@ void SolidElement::addMomentSource(const eigen::CMatXN6 &moment,
     // pad source with zeros if source has lower order than element
     // truncate source if source has higher order than element
     int nu_1_coexist = std::min(mNu_1, nu_1_moment);
-    mapPPvsN::N2PP(moment, sStressUndulated_FR, nu_1_coexist);
+    // multiply with -1 to convert an active source to internal stress
+    mapPPvsN::N2PP(-moment, sStressUndulated_FR, nu_1_coexist);
     for (int alpha = nu_1_coexist; alpha < mNu_1; alpha++) {
         for (int idim = 0; idim < 6; idim++) {
             sStressUndulated_FR[alpha][idim].setZero();
@@ -308,13 +309,6 @@ void SolidElement::addMomentSource(const eigen::CMatXN6 &moment,
         mGradQuad->computeQuad6_NoIntegration(sStressUndulated_FR,
                                               sStiffSpherical_FR,
                                               nu_1_source);
-    }
-    
-    // multiply with -1 to convert an active source to stiffness
-    for (int alpha = 0; alpha < nu_1_source; alpha++) {
-        for (int idim = 0; idim < 3; idim++) {
-            sStiffSpherical_FR[alpha][idim] *= (numerical::Real)(-1.);
-        }
     }
     
     // add stiffness to points
