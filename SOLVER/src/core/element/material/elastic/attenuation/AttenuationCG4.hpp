@@ -294,7 +294,6 @@ private:
     
     
     /////////////////// apply ///////////////////
-    // CASE == _1D_FR
     template <CaseFA CASE, class FMat6, class FCG6>
     static void apply(const FMat6 &strain, FMat6 &stress, int nx,
                       FCG6 &dStress, std::vector<FCG6> &memVar, FCG6 &strain4,
