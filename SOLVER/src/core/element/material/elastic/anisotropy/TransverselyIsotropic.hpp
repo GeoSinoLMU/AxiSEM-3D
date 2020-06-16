@@ -157,14 +157,14 @@ private:
     /////////////////// template-based implementation ///////////////////
     /////////////////////////////////////////////////////////////////////
     
-    template <CaseFA CASE, class FMat6> void
+    template <CaseFA CASE, class FMat6> static void
     strainToStress(const FMat6 &strain, FMat6 &stress, int nx,
                    const faN::PropertyN &A,
                    const faN::PropertyN &C,
                    const faN::PropertyN &F,
                    const faN::PropertyN &L,
                    const faN::PropertyN &N,
-                   const faN::PropertyN &minusN2) const {
+                   const faN::PropertyN &minusN2) {
         typedef faN::FieldArithmeticN FA;
         // use block 3, 4 as temp
         FA::F1_F2<CASE>(nx, stress, 3, strain, 0, 1);

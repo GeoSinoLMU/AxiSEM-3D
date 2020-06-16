@@ -199,7 +199,7 @@ private:
     /////////////////// template-based implementation ///////////////////
     /////////////////////////////////////////////////////////////////////
     
-    template <CaseFA CASE, class FMat6, class PMat> void
+    template <CaseFA CASE, class FMat6, class PMat> static void
     strainToStress(const FMat6 &strain, FMat6 &stress, int nx,
                    // C1
                    const PMat &C11,
@@ -227,7 +227,7 @@ private:
                    const PMat &C55,
                    const PMat &C56,
                    // C6
-                   const PMat &C66) const {
+                   const PMat &C66) {
         typedef faN::FieldArithmeticN FA;
         FA::F1xP1_to_F6xP6<CASE>(nx, stress, 0, strain,
                                  0, C11,

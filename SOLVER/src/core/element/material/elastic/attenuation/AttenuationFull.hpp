@@ -187,8 +187,8 @@ private:
         Attenuation::updateMemAlphaBeta<CASE>(dStress, memVar, nx);
         
         // update memory stress
-        Isotropic::strainToStressStatic<CASE>(strain, dStress, nx,
-                                              dLambda, dMu, dMu2);
+        Isotropic::strainToStress<CASE>(strain, dStress, nx,
+                                        dLambda, dMu, dMu2);
         
         // update memory variables, phase 2
         Attenuation::updateMemGamma<CASE>(dStress, memVar, nx);

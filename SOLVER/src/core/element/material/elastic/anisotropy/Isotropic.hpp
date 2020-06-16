@@ -152,10 +152,10 @@ private:
     // make public for attenuation
 public:
     template <CaseFA CASE, class FMat6> static void
-    strainToStressStatic(const FMat6 &strain, FMat6 &stress, int nx,
-                         const faN::PropertyN &lambda,
-                         const faN::PropertyN &mu,
-                         const faN::PropertyN &mu2) {
+    strainToStress(const FMat6 &strain, FMat6 &stress, int nx,
+                   const faN::PropertyN &lambda,
+                   const faN::PropertyN &mu,
+                   const faN::PropertyN &mu2) {
         typedef faN::FieldArithmeticN FA;
         // use block 3 to store sii
         FA::F123xP<CASE>(nx, stress, 3, strain, 0, 1, 2, lambda);
@@ -167,16 +167,6 @@ public:
         FA::FxP<CASE>(nx, stress, 3, strain, 3, mu);
         FA::FxP<CASE>(nx, stress, 4, strain, 4, mu);
         FA::FxP<CASE>(nx, stress, 5, strain, 5, mu);
-    }
-    
-private:
-    template <CaseFA CASE, class FMat6> void
-    strainToStress(const FMat6 &strain, FMat6 &stress, int nx,
-                   const faN::PropertyN &lambda,
-                   const faN::PropertyN &mu,
-                   const faN::PropertyN &mu2) const {
-        // cijkl (so the above static function can used by atteunuation)
-        strainToStressStatic<CASE>(strain, stress, nx, lambda, mu, mu2);
     }
 };
 
