@@ -47,11 +47,6 @@ public:
     // clone for copy constructor
     virtual std::unique_ptr<Attenuation> clone() const = 0;
     
-    // get number of SLS
-    int nsls() const {
-        return (int)sAlpha.rows();
-    }
-    
     // check compatibility
     virtual void
     checkCompatibility(int nr, bool elemInFourier, bool elastic1D) {
@@ -84,12 +79,17 @@ protected:
     /////////////////////////////////////////////////////////////////////
     
 protected:
+    // get number of SLS
+    static int nsls() {
+        return (int)sAlpha.rows();
+    }
+    
     ///////////////// update memory variable, phase 1 /////////////////
     // CASE == _1D_FR
-    template <CaseFA CASE, class FMat6>
+    template <CaseFA CASE, class FMat6> static
     typename std::enable_if<CASE == CaseFA::_1D_FR, void>::type
     updateMemAlphaBeta(const FMat6 &dStress, std::vector<FMat6> &memVar,
-                       int nx) const {
+                       int nx) {
         for (int isls = 0; isls < nsls(); isls++) {
             for (int idim = 0; idim < 6; idim++) {
                 memVar[isls][nx][idim] =
@@ -99,10 +99,10 @@ protected:
         }
     }
     // CASE != _1D_FR
-    template <CaseFA CASE, class FMat6>
+    template <CaseFA CASE, class FMat6> static
     typename std::enable_if<CASE != CaseFA::_1D_FR, void>::type
     updateMemAlphaBeta(const FMat6 &dStress, std::vector<FMat6> &memVar,
-                       int nx) const {
+                       int nx) {
         for (int isls = 0; isls < nsls(); isls++) {
             memVar[isls] = (sAlpha[isls] * memVar[isls] +
                             sBetta[isls] * dStress);
@@ -112,10 +112,9 @@ protected:
     
     ///////////////// update memory variable, phase 2 /////////////////
     // CASE == _1D_FR
-    template <CaseFA CASE, class FMat6>
+    template <CaseFA CASE, class FMat6> static
     typename std::enable_if<CASE == CaseFA::_1D_FR, void>::type
-    updateMemGamma(const FMat6 &dStress, std::vector<FMat6> &memVar,
-                   int nx) const {
+    updateMemGamma(const FMat6 &dStress, std::vector<FMat6> &memVar, int nx) {
         for (int isls = 0; isls < nsls(); isls++) {
             for (int idim = 0; idim < 6; idim++) {
                 memVar[isls][nx][idim] += sGamma[isls] * dStress[nx][idim];
@@ -123,10 +122,9 @@ protected:
         }
     }
     // CASE != _1D_FR
-    template <CaseFA CASE, class FMat6>
+    template <CaseFA CASE, class FMat6> static
     typename std::enable_if<CASE != CaseFA::_1D_FR, void>::type
-    updateMemGamma(const FMat6 &dStress, std::vector<FMat6> &memVar,
-                   int nx) const {
+    updateMemGamma(const FMat6 &dStress, std::vector<FMat6> &memVar, int nx) {
         for (int isls = 0; isls < nsls(); isls++) {
             memVar[isls] += sGamma[isls] * dStress;
         }
