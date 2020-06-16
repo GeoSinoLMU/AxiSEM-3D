@@ -22,7 +22,7 @@
 list_of_station_groups:
     ##########################################
     # this key can be arbitrary but must be unique in this list
-    - global_seismic_stations:
+    - global_seismic_network_GSN:
         # station locations
         locations:
             # what: station location file
@@ -32,7 +32,7 @@ list_of_station_groups:
             #          [useless] is for compatibility with SPECFEM and AxiSEM
             #       2) (x1, x2, x3) depends on the next four options
             #       3) empty lines and comment lines (led by #) are allowed
-            station_file: my_stations.txt
+            station_file: GSN_stations.txt
             # what: horizontal coordinates x1 and x2
             # type: string
             # only: LATITUDE_LONGITUDE / DISTANCE_AZIMUTH
@@ -113,7 +113,8 @@ list_of_station_groups:
             # note: DT stands for Δt of the simulation; DTx3 means
             #       sampling period = Δt * 3
             sampling_period: DT
-            # what: buffer time steps for efficient IO
+            # what: buffer time steps for efficient file writing
             # type: int
-            # note: this parameter does not affect the final result
+            # note: 1) this parameter does not affect the final results
+            #       2) use 1 to write at each time step (slow);
             buffer_time_steps: 1000000
