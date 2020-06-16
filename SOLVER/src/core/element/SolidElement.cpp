@@ -310,9 +310,16 @@ void SolidElement::addMomentSource(const eigen::CMatXN6 &moment,
                                               nu_1_source);
     }
     
+    // multiply with -1 to convert an active source to stiffness
+    for (int alpha = 0; alpha < nu_1_source; alpha++) {
+        for (int idim = 0; idim < 3; idim++) {
+            sStiffSpherical_FR[alpha][idim] *= (numerical::Real)(-1.);
+        }
+    }
+    
     // add stiffness to points
     // NOTE: doing the following with addStiffToPoints(sStiffSpherical_FR)
-    // is incorrect if the moment tensor is on the injection boundary
+    //       is incorrect if the moment tensor is on the injection boundary
     for (int ipol = 0; ipol < spectral::nPED; ipol++) {
         for (int jpol = 0; jpol < spectral::nPED; jpol++) {
             mPoints[ipol * spectral::nPED + jpol]->
